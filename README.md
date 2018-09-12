@@ -1,2 +1,2 @@
 Test
-dev branch
+dev branch amend
