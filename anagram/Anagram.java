@@ -1,7 +1,8 @@
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.Arrays;
 
 public class Anagram {
     public static void main(String[] args) {
@@ -24,16 +25,26 @@ public class Anagram {
     }
 
     private void groupAnagrams(String[] words) {
-        Map<String, List<WordWithAnagramKey>> anagramMap =
-                Stream.of(words)
-                        .map(WordWithAnagramKey::new)
-                        .collect(Collectors.groupingBy(WordWithAnagramKey::getAnagramKey));
-        for (List<WordWithAnagramKey> list : anagramMap.values()) {
-            System.out.print("[ ");
-            list.stream()
-                    .map(WordWithAnagramKey::getWord)
-                    .forEach(x -> System.out.print(x + " "));
-            System.out.println("]");
+        Map<String, List<String>> anagramMap = new HashMap<>();
+        for (String w : words) {
+            String k = findAnagramKey(w);
+            List<String> group = anagramMap.get(k);
+            if (group == null) {
+                group = new ArrayList<>();
+                anagramMap.put(k, group);
+            }
+            group.add(w);
+        }
+
+        for (List<String> list : anagramMap.values()) {
+            System.out.println(Arrays.toString(list.toArray(new String[]{})));
         }
     }
+
+    public static String findAnagramKey(String word) {
+        char[] a = word.toCharArray();
+        Arrays.parallelSort(a);
+        return new String(a);
+    }
+
 }
