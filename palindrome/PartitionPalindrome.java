@@ -83,7 +83,7 @@ public class PartitionPalindrome {
         // longest palindrom tends to center at the middle
         for (int i = s.length()/2; i >= 0; i--) {
             int[] r = findLongestPalindrome(s, i);
-            int d = r[1] - r[0]; 
+            int d = r[1] - r[0];
             if (d > a[1] - a[0]) {
                 a[0] = r[0]; a[1] = r[1];
             }
@@ -95,7 +95,7 @@ public class PartitionPalindrome {
 
         for (int i = s.length()/2 + 1; i < s.length(); i++) {
             int[] r = findLongestPalindrome(s, i);
-            int d = r[1] - r[0]; 
+            int d = r[1] - r[0];
             if (d > a[1] - a[0]) {
                 a[0] = r[0]; a[1] = r[1];
             }
@@ -122,8 +122,8 @@ public class PartitionPalindrome {
                 break;
             }
         }
-        int w = --k - ++j; 
-        if (w > a[1] - a[0]) {
+        int d = --k - ++j;
+        if (d > a[1] - a[0]) {
             a[0] = j; a[1] = k;
         }
         return a;
