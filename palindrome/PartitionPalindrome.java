@@ -16,24 +16,37 @@ public class PartitionPalindrome {
      */
     public static void main(String[] args) {
         String[] input = new String[] {
+            "x",
+            "xa",
+            "xxy",
+            "madamamadam",
+            "xyzabcdmadamamadamxyzabcd",
+            "madamamadamxyz",
+            "xyzmadamamadamxyz",
             "aab",
-            "madamamadamlevelparalleldogallollahalloop"
+            "abb",
+            "thaisandthat oasisthisis madamamadamlevelparalleldogallollahalloop"
         };
 
         for (String s : input) {
             Integer[] cutPoints = partition(s);
-            System.out.println(s + " can be cut into palindromes with "
-                    + cutPoints.length + " cut points: " + Arrays.toString(cutPoints));
-            List<String> palindromes = new ArrayList<>();
-            int i0 = 0;
-            for (Integer i : cutPoints) {
-                palindromes.add(s.substring(i0, i+1));
-                i0 = i + 1;
-            }
-            palindromes.add(s.substring(i0));
-            System.out.println(Arrays.toString(palindromes.toArray(new String[]{})));
+            printResults(s, cutPoints);
         }
 
+    }
+
+    private static void printResults(String s, Integer[] cutPoints) {
+        System.out.println("----------------");
+        System.out.print(s + " can be cut into palindromes with "
+                + cutPoints.length + " cut points: " + Arrays.toString(cutPoints) + "; palindromes: ");
+        List<String> palindromes = new ArrayList<>();
+        int i0 = 0;
+        for (Integer i : cutPoints) {
+            palindromes.add(s.substring(i0, i+1));
+            i0 = i + 1;
+        }
+        palindromes.add(s.substring(i0));
+        System.out.println(Arrays.toString(palindromes.toArray(new String[]{})));
     }
 
     private static Integer[] partition(String s) {
@@ -66,35 +79,32 @@ public class PartitionPalindrome {
 
     private static int[] findLongestPalindrome(String s){
         int[] a = new int[2]; //ranage indexes inclusive
+
         // longest palindrom tends to center at the middle
-        for (int i = s.length()/2 + 1; i < s.length(); i++) {
-            int[] r = findLongestPalindrome(s, i);
-            int w = r[1] - r[0]; 
-//            int h = (w + 1) / 2;
-//            if (h >= i || h >= s.length() - i) {
-//                a[0] = r[0];
-//                a[1] = r[1];
-//                break;
-//            }
-            if (w > a[1] - a[0]) {
-                a[0] = r[0];
-                a[1] = r[1];
-            }
-        }
         for (int i = s.length()/2; i >= 0; i--) {
             int[] r = findLongestPalindrome(s, i);
-            int w = r[1] - r[0]; 
-//            int h = (w + 1) / 2;
-//            if (h >= i || h >= s.length() - i) {
-//                a[0] = r[0];
-//                a[1] = r[1];
-//                break;
-//            }
-            if (w > a[1] - a[0]) {
-                a[0] = r[0];
-                a[1] = r[1];
+            int d = r[1] - r[0]; 
+            if (d > a[1] - a[0]) {
+                a[0] = r[0]; a[1] = r[1];
+            }
+            int w = d + 1;
+            if (w >= (i+1)*2 || w >= (s.length()-i)*2) {
+                break;
             }
         }
+
+        for (int i = s.length()/2 + 1; i < s.length(); i++) {
+            int[] r = findLongestPalindrome(s, i);
+            int d = r[1] - r[0]; 
+            if (d > a[1] - a[0]) {
+                a[0] = r[0]; a[1] = r[1];
+            }
+            int w = d + 1;
+            if (w >= (i+1)*2 || w >= (s.length()-i)*2) {
+                break;
+            }
+        }
+
         return a;
     }
 
