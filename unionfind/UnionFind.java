@@ -42,7 +42,7 @@ public class UnionFind {
         return (find(x) == find(y));
     }
 
-    public int getNumDisinctSets() {
+    public int getNumDisjointSets() {
         return count;
     }
 
