@@ -32,9 +32,6 @@ public class DpLIS {
     public int lengthOfLIS(int[] nums) {
         if (nums.length == 0) return 0;
         cache = new int[nums.length];
-        for (int i = 0; i < nums.length; i++) {
-            cache[i] = -1;
-        }
         int max = 0; 
         for (int i = 0; i < nums.length; i++) {
             int c = lisEndingAt(nums, i);
