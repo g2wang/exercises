@@ -37,8 +37,7 @@ public class MinimumWindowSubstring {
 //    A            1
 
     public String minWindow(String s, String t) {
-
-                if (s.length() < t.length()) return "";
+        if (s.length() < t.length()) return "";
         char[] tc = t.toCharArray();
         HashMap<Character, Integer> tm = new HashMap<>(tc.length);
         for (char c : tc) {
