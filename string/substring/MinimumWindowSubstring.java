@@ -13,6 +13,7 @@ If there is no such window in S that covers all characters in T, return the empt
 If there is such window, you are guaranteed that there will always be only one unique minimum window in S.
  */
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class MinimumWindowSubstring {
 
@@ -46,8 +47,7 @@ public class MinimumWindowSubstring {
             tm.put(c, n+1);
         }
         int l = 0, r = 0, count = 0;
-        int start = 0, window = s.length();
-        boolean found = false;
+        int start = 0, window = Integer.MAX_VALUE;
         for (r = 0; r < s.length(); r++) {
             char c = s.charAt(r);
             Integer n = tm.get(c);
@@ -55,25 +55,21 @@ public class MinimumWindowSubstring {
             tm.put(c, n-1);
             if (n <= 0) continue;
             count++;
-            if (count == tc.length) {
-                while (l <= r) {
-                    c = s.charAt(l++);
-                    n = tm.get(c);
-                    if (n == null) continue;
-                    tm.put(c, n+1);
-                    if (n >= 0) break;
-                }
+            while (count == tc.length) {
+                c = s.charAt(l++);
+                n = tm.get(c);
+                if (n == null) continue;
+                tm.put(c, n+1);
+                if (n < 0) continue;
                 count--;
-                int newWindow = r - l + 2;
+                int newWindow = r-l+2;
                 if (newWindow <= window) {
-                    if (!found) found = true;
-                    start = l - 1;
+                    start = l-1;
                     window = newWindow;
                 }
             }
         }
-        if (!found) return "";
+        if (window == Integer.MAX_VALUE) return "";
         return s.substring(start, start + window);
     }
-
 }
