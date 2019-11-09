@@ -1,0 +1,4 @@
+Classification of Questions
+1) arrays > 2 pointers > sliding window
+2) partition to 2 sub-arrays of equal sum
+3)

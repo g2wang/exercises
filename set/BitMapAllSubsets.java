@@ -38,10 +38,7 @@ public class BitMapAllSubsets {
 
     public List<List<Integer>> subsets(int[] nums) {
         List<List<Integer>> a = new ArrayList<>();
-        int n = 1;
-        for (int i = 0; i < nums.length; i++) {
-            n *= 2;
-        }
+        int n = 1 << nums.length;
         for (int d = 0; d < n; d++) {
             List<Integer> e = new ArrayList<>(); 
             int m = d;
