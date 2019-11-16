@@ -1,49 +1,54 @@
+/**
+ * UnionFind with union by rank and path compression heuristics
+ */
 public class UnionFind {
     int count; // the number of distinct sets
-    int[] ranks; // ranks of a tree that represents a distinct set
-    int[] parents; // parents of a element
+    int[] rank; // rank of a tree that represents a distinct set
+    int[] parent; // id of a element
 
     public UnionFind(int N) {
-        parents = new int[N];
-        ranks = new int[N];
+        parent = new int[N];
+        rank = new int[N];
         this.count = N;
         for (int i = 0; i < N; i++) {
-            parents[i] = i;
-            ranks[i] = 0;
+            parent[i] = i;
+            rank[i] = 0;
         }
     }
 
     public int find(int x) {
-        int p = x;
-        while (parents[p] != p) {
-            parents[p] = find(parents[p]);
-            p = parents[p];
-        }
-        return p;
+        if (x != parent[x]) 
+            parent[x] = find(parent[x]);
+        return parent[x];
     }
 
     public boolean union(int x, int y) {
         int rootX = find(x);
         int rootY = find(y);
         if (rootX == rootY) return false;
-        if (ranks[x] > ranks[y]) {
-            parents[rootY] = rootX;
-        } else if (ranks[x] < ranks[y]) {
-            parents[rootX] = rootY;
-        } else {
-            parents[rootX] = rootY;
-            ranks[y]++;
-        }
-        count--; 
+        link(rootX, rootY);
+        count--;
         return true;
     }
 
+    private void link(int x, int y) {
+        if (rank[x] > rank[y]) {
+            parent[y] = x;
+        } else {
+            parent[x] = y;
+            if (rank[x] == rank[y]) rank[y]++;
+        }
+    }
+
     public boolean connected(int x, int y) {
-        return (find(x) == find(y));
+        return find(x) == find(y);
     }
 
     public int getNumDisjointSets() {
         return count;
     }
 
+    public int componentSize(int x) {
+        return rank[find(x)];
+    }
 }
