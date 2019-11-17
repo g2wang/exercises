@@ -30,11 +30,12 @@ import java.util.Arrays;
 
 public class CourseSchedule {
     public static void main(String[] args) {
-        //int numCourses = 2;
+        int numCourses = 2;
         //int[][] prerequisites = new int[][]{{1,0}}; //ans = true
-        int numCourses = 4;
+        int[][] prerequisites = new int[][]{{0,1}, {1, 0}}; //ans = false
+        //int numCourses = 4;
         //int[][] prerequisites = new int[][]{{0,1},{2,3},{1,2},{3,0}}; //ans = false
-        int[][] prerequisites = new int[][]{{0,1},{2,3},{1,2},{0,3}}; //ans = true
+        //int[][] prerequisites = new int[][]{{0,1},{2,3},{1,2},{0,3}}; //ans = true
 
         CourseSchedule cs = new CourseSchedule();
         boolean ans = cs.canFinish(numCourses, prerequisites); 
@@ -94,7 +95,7 @@ public class CourseSchedule {
         boolean[] visited = null;
         boolean[] visiting = null;
         ArrayList<Integer>result = null;
-        boolean canBeSorted = true;
+        boolean hasTopoOrder = true;
 
         public TopoSort(Graph g) {
             this.g = g;
@@ -109,7 +110,7 @@ public class CourseSchedule {
                     dfs(i);
                 }
             }
-            if (canBeSorted) {
+            if (hasTopoOrder) {
                 return result;
             }
             return null;
@@ -117,7 +118,7 @@ public class CourseSchedule {
 
         public void dfs(int i) {
             if (visited[i]) return; 
-            if (visiting[i]) {canBeSorted = false; return;}
+            if (visiting[i]) {hasTopoOrder = false; return;}
             visiting[i] = true; 
             ArrayList<Integer> a = g.getAdj(i);
             for (Integer j : a) {
