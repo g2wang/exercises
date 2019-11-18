@@ -41,12 +41,11 @@ public class AllSubsets {
     }
 
     public List<List<Integer>> sub(int[] nums, int length) {
+        List<List<Integer>> sets = new ArrayList<>();
         if (length == 0) {
-            List<List<Integer>> sets = new ArrayList<>();
             sets.add(new ArrayList<Integer>());
             return sets;
         }
-        List<List<Integer>> sets = new ArrayList<>();
         int last = nums[length - 1]; 
         List<List<Integer>> sets0 = sub(nums, length - 1);
         for (List<Integer> s : sets0) {
