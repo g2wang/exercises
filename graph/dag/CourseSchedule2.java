@@ -47,33 +47,34 @@ public class CourseSchedule2 {
         System.out.printf("can finish: %b <- %s\n", ans, Arrays.toString(edges));
     }
 
+    /**
+     * copyright credit: code from LeetCode submissions
+     */
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        int[] map=new int[numCourses];
+        int[] map = new int[numCourses];
 
-        for(int i=0;i<prerequisites.length;i++) map[prerequisites[i][1]]++;
+        for(int i = 0; i < prerequisites.length; i++) map[prerequisites[i][1]]++;
 
-        boolean changed=true;
-        boolean[] visited=new boolean[prerequisites.length];
+        boolean changed = true;
+        boolean[] visited = new boolean[prerequisites.length];
 
-        while(changed){
-            changed=false;
-
-            for(int i=0;i<prerequisites.length;i++){
-                if(!visited[i]){
-                    int from=prerequisites[i][0];
-                    int to=prerequisites[i][1];
-
-                    if(map[from]==0 && map[to]!=0){
-                        visited[i]=true;
+        while (changed) {
+            changed = false;
+            for (int i = 0; i < prerequisites.length; i++) {
+                if (!visited[i]) {
+                    int from = prerequisites[i][0];
+                    int to = prerequisites[i][1];
+                    if (map[from] == 0 && map[to] != 0) {
+                        visited[i] = true;
                         map[to]--;
-                        changed=true;
+                        changed = true;
                     }
                 }
             }
         }
 
-        for(int i:map){
-            if(i>0) return false;
+        for (int i : map) {
+            if (i > 0) return false;
         }
 
         return true;
