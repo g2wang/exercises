@@ -45,7 +45,7 @@ public class LargestRectangleInHistogram {
         // int[] heights = new int[]{2};
         int[] heights = new int[]{2,1,2};
         int max = l.largestRectangleArea(heights);
-        System.out.printf("lagest rectangle area: %d of histogram: %s\n", max, Arrays.toString(heights));
+        System.out.printf("largest rectangle area: %d of histogram: %s\n", max, Arrays.toString(heights));
     }
 
     public int largestRectangleArea(int[] heights) {
