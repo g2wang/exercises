@@ -80,12 +80,14 @@ public class SearchSuggestion {
     public List<List<String>> suggestedProducts(String[] products, String searchWord) {
         List<List<String>> ans = new ArrayList<>();
         if (searchWord == null || searchWord.length() == 0) return ans;
+        long start = System.currentTimeMillis();
         Node root = new Node();
         root.val = 0;
         root.children = new TreeMap<>();
         for (String p : products) {
             addToTrie(root, p);
         }
+        long afterTrie = System.currentTimeMillis();
         // query
         char[] cs = searchWord.toCharArray();
         Node n = root;
@@ -96,6 +98,9 @@ public class SearchSuggestion {
             ans.add(top3);
             n = k;
         }
+        long afterQuery = System.currentTimeMillis();
+        System.out.printf("time building trie: %d; time doing query: %d\n",
+                afterTrie - start, afterQuery - afterTrie);
         return ans;
     }
 
