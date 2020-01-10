@@ -80,24 +80,43 @@ The cells are adjacent in only four directions: up, down, left and right.
  */
 
 import java.util.Arrays;
-import java.util.ArrayDeque;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.Queue;
+import java.util.LinkedList;
 
-public class NearestNeighbour {
+public class NearestNeighbourBfsInPlaceMinMemory {
 
     public static void main(String[] args) {
+//        int[][] m = new int[][]{
+//            {0, 0, 0},
+//            {0, 1, 0},
+//            {1, 1, 1}
+//        };
+
         int[][] m = new int[][]{
-            {0, 0, 0},
-            {0, 1, 0},
-            {1, 1, 1}
+            {0,0,1,0,1,1,1,0,1,1},
+            {1,1,1,1,0,1,1,1,1,1},
+            {1,1,1,1,1,0,0,0,1,1},
+            {1,0,1,0,1,1,1,0,1,1},
+            {0,0,1,1,1,0,1,1,1,1},
+            {1,0,1,1,1,1,1,1,1,1},
+            {1,1,1,1,0,1,0,1,0,1},
+            {0,1,0,0,0,1,0,0,1,1},
+            {1,1,1,0,1,1,0,1,0,1},
+            {1,0,1,1,1,0,1,1,1,0}
         };
+
+//        int[][] m = new int[][]{
+//            {0,1,0},
+//            {0,1,0},
+//            {0,1,0},
+//            {0,1,0},
+//            {0,1,0}
+//        };
+
         for (int[] r : m) {
             System.out.printf("%s\n", Arrays.toString(r));
         }
-        NearestNeighbour nb = new NearestNeighbour();
+        NearestNeighbourBfsInPlaceMinMemory nb = new NearestNeighbourBfsInPlaceMinMemory();
         int[][] a = nb.updateMatrix(m); 
         System.out.println("answer: -------");
         for (int[] r : a) {
@@ -106,47 +125,32 @@ public class NearestNeighbour {
     }
 
     public int[][] updateMatrix(int[][] matrix) {
-        int[][] ans = new int[matrix.length][matrix[0].length];
+        Queue<Integer> q = new LinkedList<>();
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
-                int[] p = new int[]{i, j};
-                bfs(matrix, p, ans);
-            }
-        }
-        return ans;
-    }
-
-    private void bfs(int[][] m, int[] p0, int[][] ans) {
-        ArrayDeque<int[]> queue = new ArrayDeque<>();
-        queue.offer(p0);
-        int depth = 0;
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                int[] p = queue.poll();
-                if (m[p[0]][p[1]] == 0) {
-                    ans[p0[0]][p0[1]] = depth;
-                    return;
-                }
-                if (p[0]-1 >= 0) {
-                    int[] up = new int[]{p[0]-1, p[1]};
-                    queue.offer(up);
-                }
-                if (p[0]+1 < m.length) {
-                    int[] down = new int[]{p[0]+1, p[1]};
-                    queue.offer(down);
-                }
-                if (p[1]-1 >= 0) {
-                    int[] left = new int[]{p[0], p[1]-1};
-                    queue.offer(left);
-                }
-                if (p[1]+1 < m[0].length) {
-                    int[] right = new int[]{p[0], p[1]+1};
-                    queue.offer(right);
+                if (matrix[i][j] == 0) {
+                    q.offer(i*matrix[0].length + j);
+                } else {
+                    matrix[i][j] = Integer.MAX_VALUE - 1;
                 }
             }
-            depth++;
         }
+        int[] dirs = new int[]{0, -1, 0, 1, 0};
+        while (!q.isEmpty()) {
+            int p = q.poll();
+            int i0 = p%matrix[0].length, j0 = p/matrix[0].length;
+            for (int d = 0; d < 4; d++) {
+                int i = i0 + dirs[d], j = j0 + dirs[d+1];
+                if (i >= 0 && j >= 0 && i < matrix.length && j < matrix[0].length) {
+                    int newVal = matrix[i0][j0]+1;
+                    if (newVal < matrix[i][j]) {
+                        matrix[i][j] = newVal;
+                        q.offer(i*matrix[0].length + j);
+                    }
+                }
+            }
+        }
+        return matrix;
     }
 
 }
