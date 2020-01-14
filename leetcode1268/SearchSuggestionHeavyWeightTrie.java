@@ -50,7 +50,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.ArrayDeque;
 
-public class SearchSuggestion {
+public class SearchSuggestionHeavyWeightTrie {
 
     class Node {
         char val;
@@ -66,7 +66,7 @@ public class SearchSuggestion {
         String searchWord = "mouse";
         // String[] products = new String[]{"havana"};
         // String searchWord = "tatiana";
-        SearchSuggestion ss = new SearchSuggestion();
+        SearchSuggestionHeavyWeightTrie ss = new SearchSuggestionHeavyWeightTrie();
         List<List<String>> ans = ss.suggestedProducts(products, searchWord);
         System.out.println("[");
         for (int i = 0; i < ans.size(); i++) {

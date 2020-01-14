@@ -143,10 +143,9 @@ public class SearchSuggestionBruteForce {
             ans.add(new ArrayList<String>(MAX_PER_SEARCH));
         }
         int startIndex = 0;
-        String key;
         for (int i = 0; i < searchWord.length(); i++) {
             int count = 0;
-            key = searchWord.substring(0, i+1);
+            String key = searchWord.substring(0, i+1);
             for (int j = startIndex; j < products.length; j++) {
                 if (products[j].startsWith(key)) {
                     ans.get(i).add(products[j]);
