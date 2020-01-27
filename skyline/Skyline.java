@@ -1,5 +1,6 @@
 /*
 leetcode 218. The Skyline Problem
+Hard
 https://leetcode.com/problems/the-skyline-problem/
 
 A city's skyline is the outer contour of the silhouette formed by all the buildings in that city when viewed from a distance. Now suppose you are given the locations and height of all the buildings as shown on a cityscape photo (Figure A), write a program to output the skyline formed by these buildings collectively (Figure B).
@@ -22,9 +23,12 @@ There must be no consecutive horizontal lines of equal height in the output skyl
 
  */
 
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TreeMap;
 
 public class Skyline {
     public static void main(String[] args) {
@@ -44,15 +48,71 @@ public class Skyline {
                Arrays.deepToString(buildings), sb.toString());
 
     }
+
     public List<List<Integer>> getSkyline(int[][] buildings) {
-        List<List<Integer>> skyline = new ArrayList<>();
-        skyline.add(Arrays.asList(2, 10));
-        skyline.add(Arrays.asList(3, 15));
-        skyline.add(Arrays.asList(7, 12));
-        skyline.add(Arrays.asList(12, 0));
-        skyline.add(Arrays.asList(15, 10));
-        skyline.add(Arrays.asList(20, 8));
-        skyline.add(Arrays.asList(24, 0));
-        return skyline; 
+        List<Event> events = buildEvents(buildings);
+        List<List<Integer>> ans = new ArrayList<>();
+        TreeMap<Integer, Integer> map = new TreeMap<>(); // height -> count
+        for (Event e : events) {
+            Integer existingCount = map.get(e.y);
+            if (existingCount == null) existingCount = 0; 
+            if (e.isEntering) {
+                if (map.isEmpty() || e.y > map.lastEntry().getKey()) {
+                    ans.add(List.of(e.x, e.y)); 
+                } 
+                map.put(e.y, ++existingCount);
+            } else {
+                existingCount--;
+                if (existingCount <= 0) {
+                    map.remove(e.y);
+                } else {
+                    map.put(e.y, existingCount);
+                }
+                if (map.isEmpty()) {
+                    ans.add(List.of(e.x, 0)); 
+                } else if (e.y > map.lastEntry().getKey()) {
+                    ans.add(List.of(e.x, map.lastEntry().getKey())); 
+                }
+            }
+        }
+        return ans;
     }
+    
+    private List<Event> buildEvents(int[][] buildings) {
+        List<Event> events = new ArrayList<>(buildings.length * 2);
+        for (int[] b : buildings) {
+            Event e = new Event(b[0], b[2], true); 
+            events.add(e);
+            e = new Event(b[1], b[2], false); 
+            events.add(e);
+        } 
+        Collections.sort(events); 
+        return events;
+    }
+    
+    private class Event implements Comparable<Event> {
+        int x, y; 
+        boolean isEntering; 
+        
+        public Event(int x, int y, boolean isEntering) {
+            this.x = x; this.y = y;
+            this.isEntering = isEntering; 
+        }
+        
+        public int compareTo(Event e) {
+            if (x == e.x) {
+                if (isEntering && e.isEntering) {
+                    return e.y - y; 
+                } else if (!isEntering && !e.isEntering) {
+                    return y - e.y;
+                } else if (!isEntering && e.isEntering) {
+                    return 1; 
+                } else if (isEntering && !e.isEntering) {
+                    return -1; 
+                }
+            }
+            return x - e.x;
+        }
+    }
+
 }
