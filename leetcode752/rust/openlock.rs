@@ -72,11 +72,11 @@ pub fn open_lock(deadends: Vec<String>, target: String) -> i32 {
     while !queue.is_empty() {
         for _ in 0..queue.len() {
             let element = queue.pop_front().unwrap();
-            if visited.contains(&element) {
-                continue;
-            }
             if element == target {
                 return step; 
+            }
+            if visited.contains(&element) {
+                continue;
             }
             visited.insert(element);
             let positions = [1000u32, 100u32, 10u32, 1u32];
