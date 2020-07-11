@@ -63,8 +63,8 @@ fn main() {
     assert_eq!(6, open_lock(deadends, target)); 
 }
 
-/// Runtime: 32 ms, faster than 57.14% of Rust online submissions for Open the Lock.
-/// Memory Usage: 2.1 MB, less than 100.00% of Rust online submissions for Open the Lock.
+/// Runtime: 28 ms, faster than 57.14% of Rust online submissions for Open the Lock.
+/// Memory Usage: 2.3 MB, less than 100.00% of Rust online submissions for Open the Lock.
 pub fn open_lock(deadends: Vec<String>, target: String) -> i32 {
     let mut visited = HashSet::<u32>::from_iter(deadends.iter().map(
             |x| x.parse::<u32>().unwrap()));
@@ -83,14 +83,11 @@ pub fn open_lock(deadends: Vec<String>, target: String) -> i32 {
             visited.insert(element);
             let positions = [1000u32, 100u32, 10u32, 1u32];
             for position in &positions {
-                let quotient = element / position;
-                let remainder = element % position;
-                let pre_pos_value = quotient / 10;
-                let digit = quotient % 10;
+                let digit = element / position % 10;
                 let digit_up = (digit + 1) % 10;
                 let digit_down = (digit + 9) % 10;
-                queue.push_back((pre_pos_value * 10 + digit_up) * position + remainder);
-                queue.push_back((pre_pos_value * 10 + digit_down) * position + remainder);
+                queue.push_back(element - digit * position + digit_up * position);
+                queue.push_back(element - digit * position + digit_down * position);
             }
         }
         step += 1;
