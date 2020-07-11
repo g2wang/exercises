@@ -63,6 +63,8 @@ fn main() {
     assert_eq!(6, open_lock(deadends, target)); 
 }
 
+/// Runtime: 32 ms, faster than 57.14% of Rust online submissions for Open the Lock.
+/// Memory Usage: 2.1 MB, less than 100.00% of Rust online submissions for Open the Lock.
 pub fn open_lock(deadends: Vec<String>, target: String) -> i32 {
     let mut visited = HashSet::<u32>::from_iter(deadends.iter().map(
             |x| x.parse::<u32>().unwrap()));
