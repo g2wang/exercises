@@ -67,28 +67,28 @@ pub fn open_lock(deadends: Vec<String>, target: String) -> i32 {
     let mut visited = HashSet::<u32>::from_iter(deadends.iter().map(
             |x| x.parse::<u32>().unwrap()));
     let target = target.parse::<u32>().unwrap();
-    let mut q = VecDeque::from(vec![0u32]); // enqueue '0000'
+    let mut queue = VecDeque::from(vec![0u32]); // enqueue '0000'
     let mut step = 0;
-    while !q.is_empty() {
-        for _ in 0..q.len() {
-            let e = q.pop_front().unwrap();
-            if visited.contains(&e) {
+    while !queue.is_empty() {
+        for _ in 0..queue.len() {
+            let element = queue.pop_front().unwrap();
+            if visited.contains(&element) {
                 continue;
             }
-            if e == target {
+            if element == target {
                 return step; 
             }
-            visited.insert(e);
+            visited.insert(element);
             let positions = [1000u32, 100u32, 10u32, 1u32];
             for position in &positions {
-                let quotient = e / position;
-                let remainder = e % position;
+                let quotient = element / position;
+                let remainder = element % position;
                 let pre_pos_value = quotient / 10;
                 let digit = quotient % 10;
                 let digit_up = (digit + 1) % 10;
                 let digit_down = (digit + 9) % 10;
-                q.push_back((pre_pos_value * 10 + digit_up) * position + remainder);
-                q.push_back((pre_pos_value * 10 + digit_down) * position + remainder);
+                queue.push_back((pre_pos_value * 10 + digit_up) * position + remainder);
+                queue.push_back((pre_pos_value * 10 + digit_down) * position + remainder);
             }
         }
         step += 1;
