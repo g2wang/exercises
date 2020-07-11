@@ -52,13 +52,51 @@ Every string in deadends and the string target will be a string of 4 digits
 from the 10,000 possibilities '0000' to '9999'. 
  */
 
+import java.util.HashSet;
+import java.util.LinkedList;
+
 public class OpenLock {
 
     public static void main(String[] args) {
-
+        String[] deadends = new String[]{"0201","0101","0102","1212","2002"};
+        String target = "0202";
+        int ans = openLock(deadends, target);
+        System.out.printf("ans = %d%n", ans);
+        assert ans == 6;
     }
 
-    public int openLock(String[] deadends, String target) {
-        
+    /**
+     * Runtime: 99 ms, faster than 68.82% of Java online submissions for Open the Lock.
+     * Memory Usage: 86.6 MB, less than 13.89% of Java online submissions for Open the Lock.
+     */
+    public static int openLock(String[] deadends, String target) {
+        HashSet<Integer> visited = new HashSet<>();
+        for (String deadend : deadends) {
+            visited.add(Integer.valueOf(deadend));
+        }
+        int tgt = Integer.valueOf(target);
+        LinkedList<Integer> queue = new LinkedList<>();
+        queue.offer(0);
+        int step = 0;
+        while (!queue.isEmpty()) {
+            int queueSize = queue.size();
+            for (int i = 0; i < queueSize; i++) {
+                int lockNumber = queue.poll();
+                if (lockNumber == tgt) return step;
+                if (visited.contains(lockNumber)) continue;
+                visited.add(lockNumber);
+                int exp = 1;
+                for (int j = 0; j < 4; j++) {
+                    int digit = lockNumber / exp % 10;
+                    int digitUp = (digit + 1) % 10;
+                    int digitDown = (digit + 10 - 1) % 10;
+                    queue.offer(lockNumber + (digitUp - digit) * exp);
+                    queue.offer(lockNumber + (digitDown - digit) * exp);
+                    exp *= 10;
+                }
+            }
+            step++;
+        }
+        return -1;
     }
 }
