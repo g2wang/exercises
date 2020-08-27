@@ -62,7 +62,7 @@ fn min_days(n: i32) -> i32 {
 }
 
 /// Runtime: 0 ms, faster than 100.00% of Rust online submissions for Minimum Number of Days to Eat N Oranges.
-/// Memory Usage: 2.1 MB, less than 27.78% of Rust online submissions for Minimum Number of Days to Eat N Oranges.
+/// Memory Usage: 2.1 MB, less than 38.89% of Rust online submissions for Minimum Number of Days to Eat N Oranges.
 fn dfs(n: i32, cache: &mut HashMap::<i32, i32>) -> i32 {
     if n <= 1 {
         return n;
