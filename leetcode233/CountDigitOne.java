@@ -28,36 +28,34 @@ public class CountDigitOne {
         if (n < 1) return 0;
         int len = String.valueOf(n).length();
         int ans = 0;
-        for (int i = len - 1; i >= 0; i--) {
-            ans += count(n, i, len);
-        }
-        return ans;
-    }
 
-    private int count(int n, int i, int len) {
-        int count = 0;
         int prefixNumber = n;
         int suffixNumber = 0;
         int suffixMax = 1;
         int d = 0;
-        for (int j = len-1, f = 1; j >= i; j--, f *= 10) {
-            d = prefixNumber%10;
-            prefixNumber = prefixNumber/10;
-            if (j > i) {
+        int f = 1;
+
+        for (int i = len - 1; i >= 0; i--) {
+            if (i < len - 1) {
                 suffixNumber += f*d;
                 suffixMax *= 10;
+                f *= 10;
             }
+
+            d = prefixNumber%10;
+            prefixNumber = prefixNumber/10;
+
+            ans += prefixNumber * suffixMax;
+
+            if (d > 1) {
+                ans += suffixMax;
+            } else if (d == 1) {
+                ans += suffixNumber + 1;
+            }
+
         }
 
-        count += prefixNumber * suffixMax;
-
-        if (d > 1) {
-            count += suffixMax;
-        } else if (d == 1) {
-            count += suffixNumber + 1;
-        }
-
-        return count;
+        return ans;
     }
 
 }
