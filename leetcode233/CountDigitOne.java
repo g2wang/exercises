@@ -21,6 +21,8 @@ public class CountDigitOne {
     }
 
     /**
+     * Time complexity: O(log(n))
+     * Space complexity: O(1)
      * Runtime: 0 ms, faster than 100.00% of Java online submissions for Number of Digit One.
      * Memory Usage: 35.6 MB, less than 21.29% of Java online submissions for Number of Digit One.
      */
