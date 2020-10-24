@@ -33,16 +33,16 @@ Every integer represented in the 2D-array will be between 1 and N, where N is th
 
     public static void main(String[] args) {
         int[][] edges = new int[][]{{1, 2}, {2, 3}, {3, 4}, {1, 4}, {1, 5}};
-        System.out.printf("edges.length = %d\n", edges.length);
+        System.out.printf("edges.length = %d%n", edges.length);
         RedundantEdge r = new RedundantEdge();
         int[] redundantEdge = r.findRedundantEdge(edges);
-        System.out.printf("redundant edge: %s\n", Arrays.toString(redundantEdge));
+        System.out.printf("redundant edge: %s%n", Arrays.toString(redundantEdge));
     }
 
     public int[] findRedundantEdge(int[][] edges) {
         UnionFind uf = new UnionFind(edges.length);
         for (int[] e : edges) {
-            System.out.printf("edge: %s\n", Arrays.toString(e));
+            System.out.printf("edge: %s%n", Arrays.toString(e));
             if (!uf.union(e[0]-1, e[1]-1)) return e;
         }
         return null;

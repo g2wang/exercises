@@ -48,7 +48,4 @@ public class UnionFind {
         return count;
     }
 
-    public int componentSize(int x) {
-        return rank[find(x)];
-    }
 }
