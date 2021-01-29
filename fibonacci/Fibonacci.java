@@ -14,16 +14,16 @@ public class Fibonacci {
         long N = Long.valueOf(args[0]);
         long f0 = 0;
         long f1 = 1;
-        System.out.println("fib(1): " + f1);
+        System.out.printf("fib(1): %d%n", f1);
         long f = 1;
         for (long i = 2; i <= N; i++) {
            f = f0 + f1;
-           System.out.println(String.format("fib(%3d): %d", i, f));
+           System.out.printf("fib(%d): %d%n", i, f);
            f0 = f1;
            f1 = f;
         }
-        System.out.println("the least significant 6 digits of the fibo(" + N + ") is: " + f%1000000L);
-        System.out.println("the most significant digits of the fibo(" + N + ") preceding the least significant 6 digits is: " + f/1000000L);
+        System.out.printf("the least significant 5 digits of the fibo(%d) is: %d%n", N, f%100000L);
+        System.out.printf("the most significant digits of the fibo(%d) preceding the least significant 5 digits is: %d%n", N,  (f/100000L)%10L);
         System.out.println("done.");
     }
 }
