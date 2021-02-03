@@ -25,11 +25,11 @@ Note:
 The input prerequisites is a graph represented by a list of edges, not adjacency matrices. Read more about how a graph is represented.
 You may assume that there are no duplicate edges in the input prerequisites.
  */
-
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class CourseSchedule {
+public class CourseScheduleRefactored {
     public static void main(String[] args) {
         int numCourses = 2;
         //int[][] prerequisites = new int[][]{{1,0}}; //ans = true
@@ -38,7 +38,7 @@ public class CourseSchedule {
         //int[][] prerequisites = new int[][]{{0,1},{2,3},{1,2},{3,0}}; //ans = false
         //int[][] prerequisites = new int[][]{{0,1},{2,3},{1,2},{0,3}}; //ans = true
 
-        CourseSchedule cs = new CourseSchedule();
+        CourseScheduleRefactored cs = new CourseScheduleRefactored();
         boolean ans = cs.canFinish(numCourses, prerequisites); 
 
         String[] edges = new String[prerequisites.length];
@@ -49,85 +49,107 @@ public class CourseSchedule {
     }
 
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        Graph g = new Graph(numCourses, prerequisites);
-        ArrayList<Integer> result = g.topoSort();
+        Digraph g = new Digraph(numCourses, prerequisites);
+        List<Integer> result = g.topoOrder();
         if (result != null) {
-            System.out.printf("top sort result: %s\n", Arrays.toString(result.toArray(new Integer[]{})));
+            System.out.printf("top sort result: %s\n", result.toString());
             return true;
         } 
         return false;
     }
 
-    class Graph {
+    class Digraph {
 
-        private ArrayList<ArrayList<Integer>> adj = null;
+        private List<List<Integer>> adj; // adjacency list
+        private int e; // num edges
 
-        public Graph(int n, int[][] edges) {
-            adj = new ArrayList<ArrayList<Integer>>(n);
-            for (int i = 0; i < n; i++) {
-                adj.add(new ArrayList<Integer>());
-            }
-            for (int[] e : edges) {
-                addEdge(e);
-            }
-        }
-
-        public void addEdge(int[] e) {
-            adj.get(e[0]).add(e[1]);
-        }
-
-        public ArrayList<Integer> getAdj(int i) {
-            return adj.get(i);
-        }
-
-        public int size() {
+        /**
+         * number of vertices
+         */
+        public int v() {
             return adj.size();
         }
 
-        public ArrayList<Integer> topoSort() {
+        /**
+         * number of edges
+         */
+        public int e() {
+            return e;
+        }
+
+        public Digraph(int v, int[][] edges) {
+            adj = new ArrayList<>(v);
+            for (int i = 0; i < v; i++) {
+                adj.add(new ArrayList<>()); 
+            }
+            e = 0;
+            if (edges != null) {
+                for (int[] e : edges) {
+                    addEdge(e[0], e[1]);
+                }
+            }
+        }
+
+        public void addEdge(int from, int to) {
+            adj.get(from).add(to);
+            e++;
+        }
+
+        public List<Integer> getAdj(int i) {
+            return adj.get(i);
+        }
+
+        /**
+         * returns the topo order if there is one, otherwise returns null
+         */
+        public List<Integer> topoOrder() {
             TopoSort t = new TopoSort(this);
-            return t.sort();
-        } 
+            return t.topoOrder();
+        }
     }
 
     class TopoSort {
+        private Digraph g;
+        private boolean[] visited;
+        private boolean[] visiting;
+        private List<Integer> topoOrder;
+        private boolean hasTopoOrder = true;
 
-        Graph g = null;
-        boolean[] visited = null;
-        boolean[] visiting = null;
-        ArrayList<Integer>result = null;
-        boolean hasTopoOrder = true;
-
-        public TopoSort(Graph g) {
-            this.g = g;
-            this.visited = new boolean[g.size()];
-            this.visiting = new boolean[g.size()];
-            this.result = new ArrayList<Integer>(g.size());
-        }
-
-        public ArrayList<Integer> sort() {
-            for (int i = 0; i < visited.length; i++) {
-                if (!visited[i]) {
-                    dfs(i);
-                }
-            }
+        public List<Integer> topoOrder() {
             if (hasTopoOrder) {
-                return result;
+                return topoOrder;
             }
             return null;
         }
 
-        public void dfs(int i) {
-            if (visited[i]) return; 
-            if (visiting[i]) {hasTopoOrder = false; return;}
-            visiting[i] = true; 
-            ArrayList<Integer> a = g.getAdj(i);
-            for (Integer j : a) {
+        public TopoSort(Digraph g) {
+            this.g = g;
+            visited = new boolean[g.v()];
+            visiting = new boolean[g.v()];
+            topoOrder = new ArrayList<>(g.v());
+            sort();
+        }
+
+        private void sort() {
+            for (int i = 0; i < g.v(); i++) {
+                dfs(i);
+            }
+        }
+
+        private void dfs(int i) {
+            if (visited[i]) return;
+            if (visiting[i]) {
+                hasTopoOrder = false;
+                return;
+            }
+            visiting[i] = true;
+            for (int j : g.getAdj(i)) {
                 dfs(j);
             }
-            result.add(i);
-            visited[i] = true; 
+            visited[i] = true;
+            topoOrder.add(i);
         }
 
     }
+
 }
