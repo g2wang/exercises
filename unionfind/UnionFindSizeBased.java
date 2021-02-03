@@ -51,6 +51,7 @@ public class UnionFindSizeBased {
     private int N; // number of people
     int[] parents;
     int[] sizes;
+    private int numSets; // number of communities/disjoint sets
 
      // constructor
     public UnionFindSizeBased(int N) {
@@ -61,6 +62,7 @@ public class UnionFindSizeBased {
             parents[i] = i;
             sizes[i] = 1;
         }
+        numSets = N;
     }
 
     public boolean union(int p1, int p2) {
@@ -76,6 +78,7 @@ public class UnionFindSizeBased {
             parents[g1] = g2;
             sizes[g2]+= sizes[g1];
         }
+        numSets--;
         return true;
     }
 
@@ -92,6 +95,10 @@ public class UnionFindSizeBased {
         int s = sizes[g];
         System.out.println(s);
         return s;
+    }
+
+    public int numOfDisjointSets() {
+        return numSets;
     }
 
     public static void main(String[] args) {
