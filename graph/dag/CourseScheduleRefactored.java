@@ -28,6 +28,7 @@ You may assume that there are no duplicate edges in the input prerequisites.
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class CourseScheduleRefactored {
     public static void main(String[] args) {
@@ -50,9 +51,9 @@ public class CourseScheduleRefactored {
 
     public boolean canFinish(int numCourses, int[][] prerequisites) {
         Digraph g = new Digraph(numCourses, prerequisites);
-        List<Integer> result = g.topoOrder();
-        if (result != null) {
-            System.out.printf("top sort result: %s\n", result.toString());
+        Optional<List<Integer>> result = g.topoOrder();
+        if (result.isPresent()) {
+            System.out.printf("top sort result: %s\n", result.get().toString());
             return true;
         } 
         return false;
@@ -102,7 +103,7 @@ public class CourseScheduleRefactored {
         /**
          * returns the topo order if there is one, otherwise returns null
          */
-        public List<Integer> topoOrder() {
+        public Optional<List<Integer>> topoOrder() {
             TopoSort t = new TopoSort(this);
             return t.topoOrder();
         }
@@ -115,11 +116,11 @@ public class CourseScheduleRefactored {
         private List<Integer> topoOrder;
         private boolean hasTopoOrder = true;
 
-        public List<Integer> topoOrder() {
+        public Optional<List<Integer>> topoOrder() {
             if (hasTopoOrder) {
-                return topoOrder;
+                return Optional.of(topoOrder);
             }
-            return null;
+            return Optional.empty();
         }
 
         public TopoSort(Digraph g) {
