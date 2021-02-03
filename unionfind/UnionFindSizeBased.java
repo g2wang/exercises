@@ -51,18 +51,18 @@ public class UnionFindSizeBased {
     private int N; // number of people
     int[] parents;
     int[] sizes;
-    
+
      // constructor
     public UnionFindSizeBased(int N) {
-        this.N = N; 
-        parents = new int[N];
-        sizes = new int[N];
-        for (int i = 0; i < N; i++) {
+        this.N = N;
+        parents = new int[N+1]; // 1 based array
+        sizes = new int[N+1]; // 1 based array
+        for (int i = 1; i <= N; i++) {
             parents[i] = i;
             sizes[i] = 1;
         }
     }
-    
+
     public boolean union(int p1, int p2) {
         int g1 = find(p1);
         int g2 = find(p2);
@@ -78,7 +78,7 @@ public class UnionFindSizeBased {
         }
         return true;
     }
-    
+
     public int find(int p) {
         while (parents[p] != p) {
             parents[p] = parents[parents[p]]; // path compression by halving
@@ -86,18 +86,18 @@ public class UnionFindSizeBased {
         }
         return p;
     }
-    
+
     public int querySize(int p) {
-        int g = find(p); 
+        int g = find(p);
         int s = sizes[g];
         System.out.println(s);
         return s;
-    } 
-    
+    }
+
     public static void main(String[] args) {
         /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named UnionFindSizeBased. */
         Scanner stdIn = new Scanner(System.in);
-        String line = stdIn.nextLine(); 
+        String line = stdIn.nextLine();
         String[] nq = line.split("\\s");
         int N = Integer.parseInt(nq[0]);
         int Q = Integer.parseInt(nq[1]);
@@ -106,14 +106,14 @@ public class UnionFindSizeBased {
             line = stdIn.nextLine();
             if (line.startsWith("M")) {
                 String[] params = line.split("\\s");
-                int p1 = Integer.parseInt(params[1]); 
-                int p2 = Integer.parseInt(params[2]); 
-                unionFind.union(p1-1, p2-1); 
+                int p1 = Integer.parseInt(params[1]);
+                int p2 = Integer.parseInt(params[2]);
+                unionFind.union(p1, p2);
             } else if (line.startsWith("Q")) {
                 String[] params = line.split("\\s");
-                int p = Integer.parseInt(params[1]); 
-                unionFind.querySize(p-1); 
+                int p = Integer.parseInt(params[1]);
+                unionFind.querySize(p);
             }
-        } 
+        }
     }
 }
