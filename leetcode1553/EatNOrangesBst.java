@@ -64,34 +64,33 @@ public class EatNOrangesBst {
         LinkedList<Integer> q = new LinkedList<>();
         q.offer(n);
         int d = 0;
-        while (!q.isEmpty()) {
+        while(!q.isEmpty()) {
             int size = q.size();
             for (int i = 0; i < size; i++) {
                 int m = q.poll();
                 if (m == 0) return d;
-                int m1 = m-1;
-                if (!seen.contains(m1)) {
-                    q.offer(m1);
-                    seen.add(m1);
-                }
-                if (m%3 == 0) {
-                    int m3 = m/3;
-                    if (!seen.contains(m3)) {
-                        q.offer(m3);
-                        seen.add(m3);
-                    }
+                int r = m - 1;
+                if (!seen.contains(r)) {
+                    seen.add(r);
+                    q.offer(r);
                 }
                 if (m%2 == 0) {
-                    int m2 = m/2;
-                    if (!seen.contains(m2)) {
-                        q.offer(m2);
-                        seen.add(m2);
+                    r = m/2;
+                    if (!seen.contains(r)) {
+                        seen.add(r);
+                        q.offer(r);
+                    }
+                }
+                if (m%3 == 0) {
+                    r = m/3;
+                    if (!seen.contains(r)) {
+                        seen.add(r);
+                        q.offer(r);
                     }
                 }
             }
             d++;
-        }
+        } 
         return -1;
     }
-
 }

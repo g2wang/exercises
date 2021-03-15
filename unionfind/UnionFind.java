@@ -7,19 +7,21 @@ public class UnionFind {
     int[] parent; // id of a element
 
     public UnionFind(int N) {
-        parent = new int[N];
-        rank = new int[N];
+        parent = new int[N+1];
+        rank = new int[N+1];
         this.count = N;
-        for (int i = 0; i < N; i++) {
+        for (int i = 1; i <= N; i++) {
             parent[i] = i;
             rank[i] = 0;
         }
     }
 
     public int find(int x) {
-        if (x != parent[x]) 
-            parent[x] = find(parent[x]);
-        return parent[x];
+        while (x != parent[x]) {
+            parent[x] = parent[parent[x]];
+            x = parent[x];
+        }
+        return x;
     }
 
     public boolean union(int x, int y) {

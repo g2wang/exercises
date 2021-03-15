@@ -46,18 +46,11 @@ All characters of searchWord are lower-case English letters.
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.ArrayDeque;
+import java.util.TreeSet;
+import java.util.Iterator;
+import java.util.NavigableSet;
 
-public class SearchSuggestionHeavyWeightTrie {
-
-    class Node {
-        char val;
-        Node parent;
-        TreeMap<Character, Node> children;
-        boolean isWord;
-    }
+public class SearchSuggestionTreeSet {
 
     public static void main(String[] args) {
         String[] products = new String[]{
@@ -66,7 +59,7 @@ public class SearchSuggestionHeavyWeightTrie {
         String searchWord = "mouse";
         // String[] products = new String[]{"havana"};
         // String searchWord = "tatiana";
-        SearchSuggestionHeavyWeightTrie ss = new SearchSuggestionHeavyWeightTrie();
+        SearchSuggestionTreeSet ss = new SearchSuggestionTreeSet();
         List<List<String>> ans = ss.suggestedProducts(products, searchWord);
         System.out.println("[");
         for (int i = 0; i < ans.size(); i++) {
@@ -78,72 +71,26 @@ public class SearchSuggestionHeavyWeightTrie {
     }
 
     public List<List<String>> suggestedProducts(String[] products, String searchWord) {
-        List<List<String>> ans = new ArrayList<>();
+        List<List<String>> ans = new ArrayList<>(searchWord.length());
         if (searchWord == null || searchWord.length() == 0) return ans;
-        long start = System.currentTimeMillis();
-        Node root = new Node();
-        root.val = 0;
-        root.children = new TreeMap<>();
-        for (String p : products) {
-            addToTrie(root, p);
+        TreeSet<String> treeSet = new TreeSet<>();
+        for (String product : products) {
+            treeSet.add(product);
         }
-        long afterTrie = System.currentTimeMillis();
-        // query
-        char[] cs = searchWord.toCharArray();
-        Node n = root;
-        for (char c : cs) {
-            Node k = (n == null? null : n.children.get(c)); 
-            List<String> top3 = new ArrayList<>();
-            if (k != null) fillTop3(k, top3);
-            ans.add(top3);
-            n = k;
-        }
-        long afterQuery = System.currentTimeMillis();
-        System.out.printf("time building trie: %d; time doing query: %d\n",
-                afterTrie - start, afterQuery - afterTrie);
-        return ans;
-    }
-
-    private void fillTop3(Node k, List<String> top3) {
-        if (k.isWord) {
-            top3.add(getString(k));
-            if (top3.size() == 3) return;
-        }
-        for (Map.Entry<Character, Node> e : k.children.entrySet()) {
-            Node n = e.getValue();
-            if (top3.size() < 3) {
-                fillTop3(n, top3);
+        char[] ca = searchWord.toCharArray();
+        StringBuilder key = new StringBuilder();
+        for (int i = 0; i < ca.length; i++) {
+            key.append(ca[i]);
+            NavigableSet<String> tailSet = treeSet.tailSet(key.toString(), true);
+            Iterator<String> itr = tailSet.iterator();
+            int count = 0;
+            List<String> top3 = new ArrayList<>(3);
+            while (itr.hasNext() && count++ < 3) {
+                top3.add(itr.next());    
             }
+            ans.add(top3);
         }
-    } 
-
-    private String getString(Node n) {
-        if (n == null) return "";
-        StringBuilder sb = new StringBuilder();
-        sb.append(n.val);
-        Node p = n.parent;
-        while (p != null && p.val != 0) {
-            sb.append(p.val);
-            p = p.parent;
-        }
-        return sb.reverse().toString();
-    }
-
-    private void addToTrie(Node node, String p) {
-        if (p == null || p.length() == 0) return;
-        Node n = node.children.get(p.charAt(0)); 
-        if (n == null) { 
-            n = new Node();
-            n.parent = node;
-            n.children = new TreeMap<>();
-            n.val = p.charAt(0); 
-            node.children.put(n.val, n);
-        }
-        if (p.length() == 1) {
-            n.isWord = true;
-        } else {
-            addToTrie(n, p.substring(1));
-        }
+        return ans;
     }
 
 }

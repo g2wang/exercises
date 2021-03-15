@@ -43,7 +43,7 @@ Every integer represented in the 2D-array will be between 1 and N, where N is th
         UnionFind uf = new UnionFind(edges.length);
         for (int[] e : edges) {
             System.out.printf("edge: %s%n", Arrays.toString(e));
-            if (!uf.union(e[0]-1, e[1]-1)) return e;
+            if (!uf.union(e[0], e[1])) return e;
         }
         return null;
     }

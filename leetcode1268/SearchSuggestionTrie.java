@@ -46,16 +46,14 @@ All characters of searchWord are lower-case English letters.
 import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.ArrayDeque;
 
-public class SearchSuggestionLightWeightTrie {
-
-    private static final int MAX_PER_SEARCH = 3;
+public class SearchSuggestionTrie {
 
     class Node {
-        Map<Character, Node> childrenMap = new HashMap<>();
-        Map<Character, List<Integer>> wordIndicesMap = new HashMap<>();
+        HashMap<Character, List<Integer>> top3Map = new HashMap<>();
+        HashMap<Character, Node> children = new HashMap<>();
     }
 
     public static void main(String[] args) {
@@ -65,7 +63,7 @@ public class SearchSuggestionLightWeightTrie {
         String searchWord = "mouse";
         // String[] products = new String[]{"havana"};
         // String searchWord = "tatiana";
-        SearchSuggestionLightWeightTrie ss = new SearchSuggestionLightWeightTrie();
+        SearchSuggestionTrie ss = new SearchSuggestionTrie();
         List<List<String>> ans = ss.suggestedProducts(products, searchWord);
         System.out.println("[");
         for (int i = 0; i < ans.size(); i++) {
@@ -76,50 +74,55 @@ public class SearchSuggestionLightWeightTrie {
         System.out.println("]");
     }
 
-
     public List<List<String>> suggestedProducts(String[] products, String searchWord) {
-        Arrays.sort(products);
-        List<List<String>> ans = new ArrayList<>(searchWord.length());
-        for (int i = 0; i < searchWord.length(); i++) {
-            ans.add(new ArrayList<String>(MAX_PER_SEARCH));
-        }
+        List<List<String>> ans = new ArrayList<>();
+        if (searchWord == null || searchWord.length() == 0) return ans;
         Node root = new Node();
+        Arrays.sort(products);
         for (int i = 0; i < products.length; i++) {
-            addToTrie(root, products[i], i); 
-        }        
-
-        // query
+            addToTrie(root, products[i], i);
+        } 
         char[] ca = searchWord.toCharArray();
-        Node n = root;
         for (int i = 0; i < ca.length; i++) {
-            if (n == null) break; 
             char c = ca[i];
-            List<Integer> wordIndices = n.wordIndicesMap.get(c);
-            if (wordIndices != null) {
-                for (int index : wordIndices) {
-                    ans.get(i).add(products[index]);
+            List<Integer> top3;
+            if (root != null) {
+                top3 = root.top3Map.get(c);
+                if (top3 == null) {
+                    top3 = new ArrayList<>(0);
                 }
+                List<String> top3Products = new ArrayList<>(top3.size());
+                for (int t : top3) {
+                    top3Products.add(products[t]);
+                }
+                ans.add(top3Products);
+                root = root.children.get(c);
+            } else {
+                ans.add(new ArrayList<>(0));
             }
-            n = n.childrenMap.get(c);
-        }        
-
+        }
         return ans;
     }
-    
-    private void addToTrie(Node node, String p, int i) {
+
+     private void addToTrie(Node node, String p, int i) {
+        if (p == null || p.length() == 0) return;
         char c = p.charAt(0);
-        Node child = node.childrenMap.get(c); 
-        if (child == null) {
-            child = new Node();
-            node.childrenMap.put(c, child); 
+        Node n = node.children.get(c); 
+        if (n == null) { 
+            n = new Node();
+            node.children.put(c, n);
         }
-        List<Integer> wordIndices = node.wordIndicesMap.get(c);
-        if (wordIndices == null) {
-            wordIndices = new ArrayList<>(MAX_PER_SEARCH);
-            node.wordIndicesMap.put(c, wordIndices); 
+        List<Integer> top3List = node.top3Map.get(p.charAt(0));
+        if (top3List == null) {
+            top3List = new ArrayList<>(3);
+            node.top3Map.put(c, top3List);
         }
-        if (wordIndices.size() < MAX_PER_SEARCH) wordIndices.add(i);
-        if (p.length() > 1) addToTrie(child, p.substring(1), i);  
+        if (top3List.size() < 3) {
+            top3List.add(i);
+        }
+        if (p.length() > 1) {
+            addToTrie(n, p.substring(1), i);
+        }
     }
 
 }
