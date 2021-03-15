@@ -59,7 +59,7 @@ public class EatNOrangesBst {
         System.out.printf("minDays(%d)=%d%n", n, min);
     }
 
-        public int minDays(int n) {
+    public int minDays(int n) {
         Set<Integer> seen = new HashSet<>();
         LinkedList<Integer> q = new LinkedList<>();
         q.offer(n);
