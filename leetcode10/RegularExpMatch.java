@@ -55,12 +55,13 @@ import java.util.HashSet;
 public class RegularExpMatch {
 
     private int seq = 0;
+    private static final char NONE = 0;
     private Map<Integer, Map<Character, Integer>> transitionTable = new HashMap<>();
     private Set<Integer> acceptStates = new HashSet<>();
 
     public static void main(String[] args) {
         String s = "aaa";
-        String p = "a*";
+        String p = "ab*a*c*a";
         RegularExpMatch r = new RegularExpMatch();
         boolean matches = r.isMatch(s, p);
         System.out.printf("%s matches %s: %b%n", s, p, matches);
@@ -68,7 +69,10 @@ public class RegularExpMatch {
 
     public boolean isMatch(String s, String p) {
         Integer state = Integer.valueOf(0);
+        p = normalize(p);
         buildTransitionTable(state, p, 0);
+        System.out.printf("transitionTable: %s%n", transitionTable);
+        System.out.printf("acceptStates: %s%n", acceptStates);
         return match(state, s);
     }
 
@@ -79,19 +83,22 @@ public class RegularExpMatch {
             char c = chars[i];
             Map<Character, Integer> transitions = transitionTable.get(state);
             if (transitions == null) return false;
-            state = transitions.get('.');
-            if (state == null) {
-                state = transitions.get(c);
-            } else {
-                if (match(transitions.get(c), s.substring(i+1))) return true;
+            state = transitions.get(NONE);
+            if (state != null) {
+                if (match(state, s.substring(i))) return true;
             }
+            state = transitions.get('.');
+            if (state != null) {
+                if (match(state, s.substring(i+1))) return true;
+            }
+            state = transitions.get(c);
             if (state == null) return false;
         }
         if (acceptStates.contains(state)) return true;
         return false;
     }
 
-    private void buildTransitionTable(int state, String p, int index) {
+    private void buildTransitionTable(Integer state, String p, int index) {
         if (index == p.length()) {
             acceptStates.add(state);
             return;
@@ -103,9 +110,11 @@ public class RegularExpMatch {
         }
         Integer nextState;
         char c = p.charAt(index);
+        Map<Character, Integer> prevTransitions;
         switch (c) {
             case '*':
-                buildTransitionTable(state-1, p, index+1);
+                prevTransitions = transitionTable.get(state-1);
+                prevTransitions.put(NONE, state);
                 transitions.put(p.charAt(index-1), state);
                 buildTransitionTable(state, p, index+1);
                 break;
@@ -116,6 +125,20 @@ public class RegularExpMatch {
                 break;
         }
 
+    }
+
+    private String normalize(String p) {
+        char[] chars = p.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (i-1 > 0 && chars[i-1] == '*') {
+                if (chars[i-2] == chars[i]) {
+                    char tmp = chars[i];
+                    chars[i] = chars[i-1];
+                    chars[i-1] = tmp;
+                }
+            }
+        }
+        return new String(chars);
     }
 
 }
