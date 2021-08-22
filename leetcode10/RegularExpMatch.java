@@ -55,90 +55,134 @@ import java.util.HashSet;
 public class RegularExpMatch {
 
     private int seq = 0;
-    private static final char NONE = 0;
-    private Map<Integer, Map<Character, Integer>> transitionTable = new HashMap<>();
+    private static final char NONE = '0';
+    
+    private Map<Integer, Map<Character, Integer>> transitionTable = new HashMap<>(); 
     private Set<Integer> acceptStates = new HashSet<>();
+    private Map<String, Boolean> cache = new HashMap<>(); 
 
     public static void main(String[] args) {
-        String s = "aaa";
-        String p = "ab*a*c*a";
+        // String s = "aaeeeeeeeeeeeea";
+        // String p = "ab*a*.*d*e*f*.*g*.*h*.*c*a";
+        // String s = "aaa";
+        // String p = "a*a";
+        // String s = "aaab";
+        // String p = "a*a*b";
+        String s = "ccacbcbcccabbab";
+        String p = ".c*a*aa*b*.*b*.*";
+        // ans = true
         RegularExpMatch r = new RegularExpMatch();
         boolean matches = r.isMatch(s, p);
         System.out.printf("%s matches %s: %b%n", s, p, matches);
     }
 
     public boolean isMatch(String s, String p) {
-        Integer state = Integer.valueOf(0);
         p = normalize(p);
-        buildTransitionTable(state, p, 0);
-        System.out.printf("transitionTable: %s%n", transitionTable);
-        System.out.printf("acceptStates: %s%n", acceptStates);
-        return match(state, s);
+        buildTransitionTable(0, p, 0);
+        return match(0, s);
     }
-
-    public boolean match(Integer state, String s) {
-        if (state == null) return false;
-        char[] chars = s.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            char c = chars[i];
-            Map<Character, Integer> transitions = transitionTable.get(state);
-            if (transitions == null) return false;
-            state = transitions.get(NONE);
-            if (state != null) {
-                if (match(state, s.substring(i))) return true;
-            }
-            state = transitions.get('.');
-            if (state != null) {
-                if (match(state, s.substring(i+1))) return true;
-            }
-            state = transitions.get(c);
-            if (state == null) return false;
+    
+    private Boolean matchCache(Integer state, String s) {
+        String key = state + "\t" + s;
+        Boolean result = cache.get(key);
+        if (result == null) {
+            result = match(state, s); 
+            cache.put(key, result);
         }
-        if (acceptStates.contains(state)) return true;
-        return false;
+        return result;
     }
-
-    private void buildTransitionTable(Integer state, String p, int index) {
-        if (index == p.length()) {
-            acceptStates.add(state);
-            return;
+    
+    public boolean match(Integer state, String s) {
+        if (s.isEmpty()) {
+            if (acceptStates.contains(state)) return true;
+            return false;   
         }
         Map<Character, Integer> transitions = transitionTable.get(state);
-        if (transitions == null) {
-            transitions = new HashMap<>();
-            transitionTable.put(state, transitions);
+        if (transitions == null) return false;
+        Integer st = transitions.get(NONE); 
+        if (st != null && matchCache(st, s)) return true;
+        
+        st = transitions.get('.');
+        if (st != null && matchCache(st, s.substring(1))) return true;
+        
+        st = transitions.get(s.charAt(0));    
+        if (st != null && matchCache(st, s.substring(1))) return true;
+        return false; 
+    }
+    
+    private void expandAcceptStates(Integer state) {
+        if (state == 0) return;
+        Integer prevState = state - 1;
+        Map<Character, Integer> transitions = transitionTable.get(prevState);
+        Integer st = transitions.get(NONE);
+        if (st != null && st.equals(state)) {
+            acceptStates.add(prevState); 
+            expandAcceptStates(prevState);
         }
+    }
+    
+    private void buildTransitionTable(int state, String p, int index) {
+        if (index == p.length()) {
+            acceptStates.add(state); 
+            expandAcceptStates(state);
+            return;
+        }
+        Map<Character, Integer> transitions = 
+            transitionTable.computeIfAbsent(state, k -> new HashMap<>());
+
         Integer nextState;
         char c = p.charAt(index);
         Map<Character, Integer> prevTransitions;
         switch (c) {
             case '*':
                 prevTransitions = transitionTable.get(state-1);
-                prevTransitions.put(NONE, state);
-                transitions.put(p.charAt(index-1), state);
+                prevTransitions.put(NONE, state);   
+                
+                transitions.put(p.charAt(index-1), state);   
+                
                 buildTransitionTable(state, p, index+1);
                 break;
             default:
-                nextState = ++seq;
-                transitions.put(c, nextState);
+                nextState = ++seq; 
+                transitions.put(c, nextState);   
                 buildTransitionTable(nextState, p, index+1);
                 break;
         }
-
+        
+    }
+    
+    private String normalize(String p) {
+        String p1 = p;
+        do {
+            p = p1;
+            String p0 = normalize0(0, p);
+            p1 = normalize1(p0);
+        } while (!p1.equals(p));
+        return p1;
     }
 
-    private String normalize(String p) {
-        char[] chars = p.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            if (i-1 > 0 && chars[i-1] == '*') {
-                if (chars[i-2] == chars[i]) {
-                    char tmp = chars[i];
-                    chars[i] = chars[i-1];
-                    chars[i-1] = tmp;
-                }
+    private String normalize0(int startIndex, String p) {
+        char[] cs = p.toCharArray();
+        int len = cs.length;
+        for (int i = startIndex; i < len; i++) {
+            if (cs[i] == '*' && i+2 < len && cs[i-1] == cs[i+1] && cs[i+2] == '*') {
+                return normalize0(i-1, p.substring(0, i+1) + p.substring(i+3));
             }
         }
-        return new String(chars);
+        return p;
+    }
+    
+    private String normalize1(String p) {
+        char[] cs = p.toCharArray();
+        for (int i = 2; i < cs.length; i++) {
+            if (cs[i-1] == '*' && cs[i-2] == cs[i]) {
+                char tmp = cs[i];
+                cs[i] = cs[i-1];
+                cs[i-1] = tmp;
+                i++;
+            }
+        }
+        return new String(cs);
     }
 
 }
