@@ -66,22 +66,20 @@ public class MergeKLists {
     private ListNode merge(ListNode n1, ListNode n2) {
         ListNode result = new ListNode();
         ListNode n = result;
-        while (n1 != null || n2 != null) {
-            if (n1 != null && n2 != null) {
-                if (n1.val < n2.val) {
-                    n = n.next = n1;
-                    n1 = n1.next;
-                } else {
-                    n = n.next = n2;
-                    n2 = n2.next;
-                }
-            } else if (n1 != null) {
+        while (n1 != null && n2 != null) {
+            if (n1.val < n2.val) {
                 n = n.next = n1;
                 n1 = n1.next;
             } else {
                 n = n.next = n2;
                 n2 = n2.next;
             }
+        }
+        if (n1 != null) {
+            n.next = n1;
+        } 
+        if (n2 != null) {
+            n.next = n2;
         }
         return result.next;
     }

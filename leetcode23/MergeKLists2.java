@@ -53,42 +53,44 @@ public class MergeKLists2 {
     }
 
     public ListNode mergeKLists(ListNode[] lists) {
-        if(lists.length == 0)
-            return null;
+        if (lists == null || lists.length == 0) return null;
+        if (lists.length == 1) return lists[0];
         return merge(lists, 0, lists.length-1);
     }
 
-    private ListNode merge(ListNode[] lists, int st, int end){
-        if(st== end)
-            return lists[st];
-        int mid = (st+end)/2;
-        ListNode l1 = merge(lists, st , mid);
-        ListNode l2 = merge(lists, mid+1, end);
-        return merge2(l1,l2);
-    }
 
-    private ListNode merge2(ListNode l1 , ListNode l2){
-        ListNode head = new ListNode();
-        ListNode tail = head;
-        while(l1 != null && l2 != null){
-            if(l1.val < l2.val){
-                tail.next = l1;
-                tail = tail.next;
-                l1 = l1.next;
-            }else{
-                tail.next = l2;
-                tail = tail.next;
-                l2 = l2.next;
-            }
-
+    private ListNode merge(ListNode[] lists, int start,  int end) {
+        if (start == end) {
+            return lists[start];
+        } else if (end - start == 1) {
+            return merge2(lists[start], lists[end]);
         }
-        if(l1 == null)
-            tail.next = l2;
-        if(l2 == null)
-            tail.next = l1;
-        return head.next;
+        int mid = (start + end)/2;
+        ListNode l = merge(lists, start, mid);
+        ListNode r = merge(lists, mid+1, end);
+        return merge2(l, r);
     }
-    
+
+    private ListNode merge2(ListNode n1, ListNode n2) {
+        ListNode result = new ListNode();
+        ListNode n = result;
+        while (n1 != null && n2 != null) {
+            if (n1.val < n2.val) {
+                n = n.next = n1;
+                n1 = n1.next;
+            } else {
+                n = n.next = n2;
+                n2 = n2.next;
+            }
+        }
+        if (n1 != null) {
+            n.next = n1;
+        }
+        if (n2 != null) {
+            n.next = n2;
+        }
+        return result.next;
+    }
 
     /**
      * listOfNodeSpec: [[1,4,5],[1,3,4],[2,6]]
