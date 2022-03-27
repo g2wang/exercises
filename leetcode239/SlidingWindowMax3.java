@@ -52,8 +52,10 @@ import java.util.TreeMap;
 public class SlidingWindowMax3 {
 
     public static void main(String[] args) {
-        int[] nums = new int[]{-7,-8,7,5,7,1,6,0};
-        int k = 4;
+        // int[] nums = new int[]{-7,-8,7,5,7,1,6,0};
+        // int k = 4;
+        int[] nums = new int[]{1,2,3,5,-1,6,7,4,2,-1};
+        int k = 3;
         SlidingWindowMax3 swm = new SlidingWindowMax3();
         int[] ans = swm.maxSlidingWindow(nums, k);
         System.out.printf("ans: %s%n", Arrays.toString(ans));
@@ -85,6 +87,8 @@ public class SlidingWindowMax3 {
 
         int[] output = new int[n-k+1];
 
+        System.out.printf("left : %s%n", Arrays.toString(left));
+        System.out.printf("right:       %s%n", Arrays.toString(right));
         for (int i = 0; i < n-k+1; i++) {
             output[i] = Math.max(left[i+k-1], right[i]);
         }

@@ -1,0 +1,131 @@
+diff --git a/leetcode301/RemoveInvalidParentheses.java b/leetcode301/RemoveInvalidParentheses.java
+index 29724b8..4a6dde3 100644
+--- a/leetcode301/RemoveInvalidParentheses.java
++++ b/leetcode301/RemoveInvalidParentheses.java
+@@ -22,85 +22,57 @@ Output: [""]
+ 
+ import java.util.Arrays;
+ import java.util.ArrayList;
++import java.util.LinkedList;
+ import java.util.List;
+ import java.util.HashSet;
+ import java.util.stream.Collectors;
+ 
+ public class RemoveInvalidParentheses {
+-    private char p1 = '(', p2 = ')';
+-
+    public static void main(String[] args) {
+        // String s = ")(";
+        // String s = "(a)())()";
+        String s = "(r(()()("; // ans: ["r()()","r(())","(r)()","(r())"]
+        //                             [ r()(),  r(()),  (r)(),  (r())]
+        /*
+         (  r  (  (  )  (  )  (
+         1  1  2  3  2  3  2  3
+         (  )  (  )  (  (  r  (
+         -1 
+         )  (  )  (  (  r  (
+         1  0  1  0  -1
+      1  )  )  (  (  r  ( 
+         1  2  1  0  r -1
+    1.1  )  )  (  r  ( 
+    1.2  )  )  (  (  r
+      2  )  (  )  (  r  (
+         1  0  1  0  0 -1
+    2.1  )  )  (  r  (
+    2.2  )  (  )  r  (
+    2.3  )  (  )  (  r
+         */
+        RemoveInvalidParentheses r = new RemoveInvalidParentheses();
+        List<String> out = r.removeInvalidParentheses(s); 
+        System.out.printf("%s -> %s%n", s, out);
+    }
+ 
++    /*
++        1. (())) more right parenthesis than left
++        once we find the right paren is more than left paren 
++        we delete the the first right paren
++        
++        2.if left is more than right we reverse it and use the same logic in 1
++         (() -> )(( use the same logic of step 1 
++         ')' regard as left, '(' regard as right     
++        
++        1. estimate the paren number of left and right 
++     */  
++    public char[][] Patterns = {{'(',')'}, {')','('}};
+     public List<String> removeInvalidParentheses(String s) {
+-        List<String> forwardResults = remove(s);
+-        List<String> backwardResults = new ArrayList<>();
+-        p1 = ')'; p2 = '(';
+-        for (String forward: forwardResults) {
+-            String reverse = (new StringBuilder(forward)).reverse().toString();
+-            backwardResults.addAll(remove(reverse));
+-        }
+-        List<String> results = new ArrayList<>(backwardResults.size());
+-        for (String backward: backwardResults) {
+-            String reverse = (new StringBuilder(backward)).reverse().toString();
+-            results.add(reverse);
+-        }
+-        return dedupe(results);
++        
++        List<String> res = new LinkedList<>();
++        // if (s == null) {
++        //     return res;
++        // }
++        removeHelper(s, res, 0, 0, Patterns[0]);
++        return res;
+     }
+-
+-    public List<String> remove(String s) {
+-        int stack = 0;
+-        List<Integer> p2Indexes = new ArrayList<>();
+-        int rpIndex = -2;
+-        for (int i = 0; i < s.length(); i++) {
+-            char c = s.charAt(i);
+-            if (c == p1) {
+-                stack++;
+-            } else if (c == p2) {
+-                stack--;
+-                if (i - rpIndex > 1) p2Indexes.add(i);
+-                rpIndex = i;
+-            } 
+-            if (stack < 0) {
+-                List<String> variants = new ArrayList<>();
+-                for (int j : p2Indexes) {
+-                    variants.add(s.substring(0, j) + s.substring(j+1));
+-                }
+-                List<String> results = new ArrayList<>();
+-                for (String v : variants) {
+-                    results.addAll(remove(v));
++    
++   public void removeHelper(String s, List<String> output, int Start, int lastRemove, char[] Pattern) {
++        int Counter = 0;
++        for (int i = Start; i < s.length(); i++) {
++            if (s.charAt(i) == Pattern[0]) Counter++;
++            if (s.charAt(i) == Pattern[1]) Counter--;
++            if (Counter < 0) { 
++                for (int j = lastRemove; j <= i; j++) {
++                if (s.charAt(j) == Pattern[1] && (j == lastRemove || s.charAt(j - 1) != Pattern[1]))
++                    {   removeHelper(s.substring(0, j) + s.substring(j + 1, s.length()), output, i, j, Pattern);
++                    }   
+                 }
+-                return results;
++                     
++                return; 
+             }
+         }
+-        return Arrays.asList(s);
+-    }
+-   
+-    private List<String> dedupe(List<String> list) {
+-        return new ArrayList<>(new HashSet<>(list));
++       
++        String reversed = new StringBuilder(s).reverse().toString();
++        if (Pattern == Patterns[0])
++            removeHelper(reversed, output, 0, 0, Patterns[1]);
++        else
++            output.add(reversed);    
++        
+     }
++
+ }
