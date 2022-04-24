@@ -28,6 +28,12 @@ Constraints:
 num consists of only digits.
 -2^31 <= target <= 2^31 - 1
 
+
+-------------
+
+Runtime: 127 ms, faster than 63.33% of Java online submissions for Expression Add Operators.
+Memory Usage: 42.8 MB, less than 91.34% of Java online submissions for Expression Add Operators.
+
 */
 
 
