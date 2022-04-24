@@ -78,47 +78,47 @@ public class CountSmaller2 {
      */
     public List<Integer> countSmaller(int[] nums) {
         if(nums.length==0) return Collections.emptyList();
-        Integer[] ret = new Integer[nums.length];
+        Integer[] ans = new Integer[nums.length];
 
         Node head = new Node(nums[nums.length-1]);
-        ret[nums.length-1] = 0;
+        ans[nums.length-1] = 0;
         for(int i = nums.length - 2; i >= 0; i--) {
-            ret[i] = insert(head, nums[i], 0);
+            ans[i] = insert(head, nums[i], 0);
         }
-        return Arrays.asList(ret);
+        return Arrays.asList(ans);
     }
 
-    private int insert(Node node, int num, int less) {
+    private int insert(Node node, int num, int leftCount) {
 
         if(node.val == num) {
 
             node.count++;
-            less += node.less;
+            leftCount += node.leftCount;
 
         } else if(node.val < num) {
 
-            less += node.count + node.less;
+            leftCount += node.count + node.leftCount;
             if(node.right==null) {
                 node.right = new Node(num);
             } else {
-                less = insert(node.right, num, less);
+                leftCount = insert(node.right, num, leftCount);
             }
         } else {
 
-            node.less++;
+            node.leftCount++;
             if(node.left==null) {
                 node.left = new Node(num);
             } else {
-                less = insert(node.left, num, less);
+                leftCount = insert(node.left, num, leftCount);
             }
         }
-        return less;
+        return leftCount;
     }
 
     static class Node {
         int val;
         int count;
-        int less;
+        int leftCount;
         Node left;
         Node right;
 
@@ -128,7 +128,7 @@ public class CountSmaller2 {
         }
 
         public String toString() {
-            return "["+val+", "+count+", "+less+", "+left+", "+right+"]";
+            return "["+val+", "+count+", "+leftCount+", "+left+", "+right+"]";
         }
     }
 

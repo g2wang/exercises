@@ -38,12 +38,12 @@ public class AddOperators {
     public static void main(String[] args) {
         AddOperators a = new AddOperators();
 
-        String num = "3456237490";
-        int target = 9191;
+        // String num = "3456237490";
+        // int target = 9191;
         // expected result: []
 
-        // String num = "123456789";
-        // int target = 45;
+        String num = "123456789";
+        int target = 45;
 
         List<String> result = a.addOperators(num, target);
 
