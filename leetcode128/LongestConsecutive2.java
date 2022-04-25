@@ -38,6 +38,7 @@ public class LongestConsecutive2 {
         System.out.printf("%s%nans: %d%n", Arrays.toString(nums), ans);
     }
 
+
     public int longestConsecutive(int[] nums) {
         if (nums.length == 0) return 0;
         int n = nums.length;
@@ -49,12 +50,12 @@ public class LongestConsecutive2 {
         for (int num : set) {
             if (!set.contains(num-1)) {
                 int currentNum = num;
-                int longestStreak = 1;  
+                int streak = 1;
                 while (set.contains(currentNum+1)) {
-                     currentNum += 1;
-                    longestStreak++;
+                    currentNum += 1;
+                    streak++;
                 }
-                ans = Math.max(ans, longestStreak); 
+                ans = Math.max(ans, streak);
             }
         }
         return ans;
