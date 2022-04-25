@@ -39,7 +39,7 @@ public class LongestConsecutive2 {
     }
 
      public int longestConsecutive(int[] nums) {
-        Set<Integer> numSet = new HashSet<Integer>();
+        Set<Integer> numSet = new HashSet<>();
         for (int num : nums) {
             numSet.add(num);
         }
