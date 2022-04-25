@@ -26,8 +26,8 @@ import java.util.*;
 
 
 /**
- * Runtime: 13 ms, faster than 95.89% of Java online submissions for Longest Consecutive Sequence.
- * Memory Usage: 57.4 MB, less than 84.69% of Java online submissions for Longest Consecutive Sequence.
+ * Runtime: 12 ms, faster than 96.93% of Java online submissions for Longest Consecutive Sequence.
+ * Memory Usage: 57.1 MB, less than 90.41% of Java online submissions for Longest Consecutive Sequence.
  */
 public class LongestConsecutive2 {
 
@@ -41,8 +41,7 @@ public class LongestConsecutive2 {
 
     public int longestConsecutive(int[] nums) {
         if (nums.length == 0) return 0;
-        int n = nums.length;
-        Set<Integer> set = new HashSet<>(n);
+        Set<Integer> set = new HashSet<>(nums.length);
         for (int num : nums) {
             set.add(num);
         }
