@@ -64,32 +64,26 @@ public class LongestConsecutive {
         return maxSize;
     }
 
-    /**
-     * if i and j are already unioned, return false; otherwise return true
-     */
-    public boolean union(int i, int j) {
-        int ri = root(i);
-        int rj = root(j);
-        if (ri != rj) {
-            if (size[ri] > size[rj]) {
-                size[ri] += size[rj];
-                parent[rj] = ri;
-                maxSize = Math.max(maxSize, size[ri]);
-            } else {
-                size[rj] += size[ri];
-                parent[ri] = rj;
-                maxSize = Math.max(maxSize, size[rj]);
-            }
-            return true;
+    public void union(int i, int j) {
+        int ri = find(i);
+        int rj = find(j);
+        if (ri == rj) return;
+        if (size[ri] > size[rj]) {
+            size[ri] += size[rj];
+            parent[rj] = ri;
+            maxSize = Math.max(maxSize, size[ri]);
+        } else {
+            size[rj] += size[ri];
+            parent[ri] = rj;
+            maxSize = Math.max(maxSize, size[rj]);
         }
-        return false;
     }
 
 
-    private int root(int i) {
+    private int find(int i) {
         while (i != parent[i]) {
             int j = i;
-            i = parent[i];
+            i = parent[i]; // path compression by halving
             parent[j] = i;
         }
         return i;
