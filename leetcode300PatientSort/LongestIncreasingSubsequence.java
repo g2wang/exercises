@@ -95,9 +95,9 @@ public class LongestIncreasingSubsequence {
             List<Card> pile = piles.get(m);
             Card c = pile.get(pile.size()-1); // get the top card from this pile
 
-            if (c.i == i) return m; // exact match
-
-            if (c.i < i) {
+            if (c.i == i) {
+                return m; // exact match
+            } else if (c.i < i) {
                 l = m + 1; // ignore left half
             } else {
                 r = m - 1; // ignore right half
