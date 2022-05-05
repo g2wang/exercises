@@ -44,13 +44,13 @@ public class LongestIncreasingSubsequence3 {
 
     /**
      * Runtime: 8 ms, faster than 78.30% of Java online submissions for Longest Increasing Subsequence.
-     * Memory Usage: 45.3 MB, less than 10.87% of Java online submissions for Longest Increasing Subsequence.
+     * Memory Usage: 44.9 MB, less than 23.09% of Java online submissions for Longest Increasing Subsequence.
      */
     public int lengthOfLIS(int[] nums) {
         if (nums == null) return 0;
         int n = nums.length;
         if (n <= 1) return n;
-        List<List<Integer>> piles = new ArrayList<>(n);
+        List<List<Integer>> piles = new ArrayList<>();
         for (int v : nums) {
             Integer hostPileIndex = findHostPileIndex(piles, v);
             List<Integer> hostPile;
