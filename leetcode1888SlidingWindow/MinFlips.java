@@ -37,17 +37,49 @@ s[i] is either '0' or '1'.
 
  */
 
+import java.util.Arrays;
+import java.util.List;
+
 public class MinFlips {
 
-
     public int minFlips(String s) {
-        return 2;
+        String ss = s + s;
+        StringBuilder sb1 = new StringBuilder();
+        StringBuilder sb2 = new StringBuilder();
+        for (int i = 0; i < ss.length(); i++) {
+            if (i % 2 == 0) {
+                sb1.append('0');
+                sb2.append('1');
+            } else {
+                sb1.append('1');
+                sb2.append('0');
+            }
+        }
+
+        int ans = s.length();
+        int diff1 = 0;
+        int diff2 = 0;
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = 0; j < s.length(); j++) {
+                if (ss.charAt(i+j) != sb1.charAt(i+j)) {
+                    diff1++;
+                } 
+                if (ss.charAt(i+j) != sb2.charAt(i+j)) {
+                    diff2++;
+                }
+            } 
+            ans = Math.min(ans, diff1); 
+            ans = Math.min(ans, diff2); 
+        }
+        return ans;
     }
 
     public static void main(String[] args) {
         MinFlips mf = new MinFlips();
-        String s = "111000";
-        System.out.printf("%s -> %d%n", s, mf.minFlips(s));
+        List<String> a = Arrays.asList("111000", "010", "1110");
+        for (String s : a) {
+            System.out.printf("%s -> %d%n", s, mf.minFlips(s));
+        }
     }
 
 }
