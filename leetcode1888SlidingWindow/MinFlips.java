@@ -44,32 +44,22 @@ public class MinFlips {
 
     public int minFlips(String s) {
         String ss = s + s;
-        StringBuilder sb1 = new StringBuilder();
-        StringBuilder sb2 = new StringBuilder();
-        for (int i = 0; i < ss.length(); i++) {
-            if (i % 2 == 0) {
-                sb1.append('0');
-                sb2.append('1');
-            } else {
-                sb1.append('1');
-                sb2.append('0');
-            }
-        }
 
         int ans = s.length();
-        int diff1 = 0;
-        int diff2 = 0;
         for (int i = 0; i < s.length(); i++) {
+            int diff1 = 0, diff2 = 0;
             for (int j = 0; j < s.length(); j++) {
-                if (ss.charAt(i+j) != sb1.charAt(i+j)) {
-                    diff1++;
-                } 
-                if (ss.charAt(i+j) != sb2.charAt(i+j)) {
-                    diff2++;
+                int idx = i+j;
+                char c = (idx % 2 == 0) ? '1' : '0';
+                if (ss.charAt(idx) == c) {
+                  diff1++;
+                } else {
+                  diff2++;
                 }
-            } 
-            ans = Math.min(ans, diff1); 
-            ans = Math.min(ans, diff2); 
+            }
+            ans = Math.min(ans, diff1);
+            ans = Math.min(ans, diff2);
+            if (ans == 0) return 0;
         }
         return ans;
     }
