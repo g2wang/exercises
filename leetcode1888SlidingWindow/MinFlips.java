@@ -43,14 +43,14 @@ import java.util.List;
 public class MinFlips {
 
     public int minFlips(String s) {
-        String ss = s + s;
-        int ans = s.length();
-        for (int i = 0; i < s.length(); i++) {
+        int n = s.length();
+        int ans = n;
+        for (int i = 0; i < n; i++) {
             int diff1 = 0, diff2 = 0;
             char c = '1';
-            for (int j = 0; j < s.length(); j++) {
+            for (int j = 0; j < n; j++) {
                 c = (c == '0') ? '1' : '0';
-                if (ss.charAt(i+j) == c) {
+                if (s.charAt((i+j)%n) == c) {
                   diff1++;
                 } else {
                   diff2++;
