@@ -45,20 +45,32 @@ public class MinFlips {
     public int minFlips(String s) {
         int n = s.length();
         int ans = n;
+        char c = '0';
+        int diff0 = 0, diff1 = 0;
         for (int i = 0; i < n; i++) {
-            int diff1 = 0, diff2 = 0;
-            char c = '1';
-            for (int j = 0; j < n; j++) {
-                c = (c == '0') ? '1' : '0';
-                if (s.charAt((i+j)%n) == c) {
-                  diff1++;
-                } else {
-                  diff2++;
-                }
+            if (s.charAt(i) == c) {
+                diff1++;
+            } else {
+                diff0++;
             }
+            c = (c == '0') ? '1' : '0';
+        }
+        ans = Math.min(ans, diff0);
+        ans = Math.min(ans, diff1);
+        if (ans == 0) return 0;
+        if (n % 2 == 0) return ans;
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) == c) {
+                diff0--;
+                diff1++;
+            } else {
+                diff0++;
+                diff1--;
+            }
+            ans = Math.min(ans, diff0);
             ans = Math.min(ans, diff1);
-            ans = Math.min(ans, diff2);
             if (ans == 0) return 0;
+            c = (c == '0') ? '1' : '0';
         }
         return ans;
     }
