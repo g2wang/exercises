@@ -3,7 +3,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 /**
- * This is a variant of leetcode 146.
+ * This is a variant of leetcode 146 - LRU cache.
  * implements LRU cache.
  * time complexity must be O(1).
  * must be thread-safe.
@@ -60,6 +60,7 @@ public class LRU {
         lru.put(2, 2);
         lru.put(3, 3);
         lru.put(3, 4);
+        lru.put(3, -3);
         lru.put(1, -1);
         System.out.printf("one: %d%n", lru.get(1));
         System.out.printf("two: %d%n", lru.get(2));
@@ -72,13 +73,12 @@ public class LRU {
         this.capacity = capacity;
     }
 
-    private Map<Integer, Node> cache = Collections.synchronizedMap(
-            new WeakHashMap<>(capacity));
+    private Map<Integer, Node> cache = new WeakHashMap<>(capacity);
 
     private Node head = new Node();
     private Node tail = head;
 
-    public Integer get(Integer key) {
+    public synchronized Integer get(Integer key) {
         Node node = cache.get(key);
         if (node != null)  {
             moveOldNodeToFront(node);
@@ -90,7 +90,7 @@ public class LRU {
     /**
      * returns repalced old Value or null if the key is new
      */
-    public Integer put(Integer key, Integer val) {
+    public synchronized Integer put(Integer key, Integer val) {
         Integer replacedVal = null;
         Node existing = cache.get(key);
         if (existing == null) { // new key
@@ -107,13 +107,13 @@ public class LRU {
         return replacedVal;
     }
 
-    private synchronized void addNewNodeToFront(Node key) {
+    private void addNewNodeToFront(Node key) {
         key.next = head;
         head.prev = key;
         head = key;
     }
 
-    private synchronized void moveOldNodeToFront(Node touchedNode) {
+    private void moveOldNodeToFront(Node touchedNode) {
         if (touchedNode == head) {
             head.key = touchedNode.key;
             head.val = touchedNode.val;
