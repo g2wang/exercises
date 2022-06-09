@@ -62,6 +62,8 @@ public class LRU {
         lru.put(3, 4);
         lru.put(3, -3);
         lru.put(1, -1);
+        lru.put(3, -3);
+        lru.put(3, 3);
         System.out.printf("one: %d%n", lru.get(1));
         System.out.printf("two: %d%n", lru.get(2));
         System.out.printf("three: %d%n", lru.get(3));
@@ -73,6 +75,7 @@ public class LRU {
     private Map<Integer, Node> cache = new WeakHashMap<>(capacity);
 
     public LRU(int capacity) {
+        if (capacity < 1) throw new IllegalArgumentException("error: capacity < 1");
         this.capacity = capacity;
     }
 
