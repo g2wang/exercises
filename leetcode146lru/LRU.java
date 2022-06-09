@@ -55,7 +55,7 @@ At most 2 * 105 calls will be made to get and put.
 public class LRU {
 
     public static void main(String[] args) {
-        LRU lru = new LRU(2);
+        LRU lru = new LRU(1);
         lru.put(1, 1);
         lru.put(2, 2);
         lru.put(3, 3);
@@ -68,15 +68,13 @@ public class LRU {
     }
 
     private int capacity;
+    private Node head = null;
+    private Node tail = null;
+    private Map<Integer, Node> cache = new WeakHashMap<>(capacity);
 
     public LRU(int capacity) {
         this.capacity = capacity;
     }
-
-    private Map<Integer, Node> cache = new WeakHashMap<>(capacity);
-
-    private Node head = new Node();
-    private Node tail = head;
 
     public synchronized Integer get(Integer key) {
         Node node = cache.get(key);
@@ -94,10 +92,13 @@ public class LRU {
         Integer replacedVal = null;
         Node existing = cache.get(key);
         if (existing == null) { // new key
-            if (cache.size() >= capacity) evict();
-            Node node = new Node(key, val);
-            cache.put(key, node);
-            addNewNodeToFront(node);
+            if (cache.size() >= capacity) {
+                existing = evict(key, val);
+            } else {
+                existing = new Node(key, val);
+                addNewNodeToFront(existing);
+            }
+            cache.put(key, existing);
         } else { // replace exiting key
             replacedVal = existing.val;
             existing.key = key;
@@ -108,9 +109,18 @@ public class LRU {
     }
 
     private void addNewNodeToFront(Node key) {
+        if (head == null) { // first node
+            head = key;
+            tail = head;
+            head.prev = tail;
+            tail.next = head;
+            return;
+        }
         key.next = head;
         head.prev = key;
         head = key;
+        head.prev = tail;
+        tail.next = head;
     }
 
     private void moveOldNodeToFront(Node touchedNode) {
@@ -125,19 +135,20 @@ public class LRU {
         oldPrev.next = oldNext;
         oldNext.prev = oldPrev;
         touchedNode.next = head;
-        touchedNode.prev = null;
         head.prev = touchedNode;
         head = touchedNode;
+        head.prev = tail;
+        tail.next = head;
     }
 
-    private void evict() {
-        cache.remove(tail.prev.key);
-        // System.out.printf("evicted %d%n", tail.prev.key);
-        Node evicted = tail;
+    private Node evict(Integer key, Integer val) {
+        cache.remove(tail.key);
+        // System.out.printf("evicted %d%n", tail.key);
+        head = tail;
         tail = tail.prev;
-        tail.next = null;
-        evicted.prev = null;
-        evicted = null;
+        head.key = key;
+        head.val = val;
+        return head;
     }
 
     class Node {
