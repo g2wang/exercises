@@ -1,5 +1,6 @@
 /*
 LeetCode: 84. Largest Rectangle in Histogram
+Hard
 Given n non-negative integers representing the histogram's bar height where the width of each bar is 1, find the area of largest rectangle in the histogram.
         _
       _| |
@@ -48,6 +49,10 @@ public class LargestRectangleInHistogram {
         System.out.printf("largest rectangle area: %d of histogram: %s\n", max, Arrays.toString(heights));
     }
 
+    /**
+     * time: 7 ms, faster than 99.90%
+     * memory: 40.7MB
+     */
     public int largestRectangleArea(int[] heights) {
         if (heights.length == 0) return 0;
         int max = 0;
