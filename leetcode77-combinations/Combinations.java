@@ -39,8 +39,8 @@ public class Combinations {
     }
 
     /**
-     * Runtime: 25 ms, faster than 67.95% of Java online submissions for Combinations.
-     * Memory Usage: 59.7 MB, less than 18.14% of Java online submissions for Combinations.
+     * Runtime: 23 ms, faster than 73.13% of Java online submissions for Combinations.
+     * Memory Usage: 57.3 MB, less than 18.54% of Java online submissions for Combinations.
      */
     public List<List<Integer>> combine(int n, int k) {
          return combine(n, k, 1); 
@@ -56,9 +56,8 @@ public class Combinations {
             }
             return ans;
         }
-        k--;
         for (int i = start; i <= n-k+1; i++) {
-            List<List<Integer>> tailList = combine(n, k, ++start);
+            List<List<Integer>> tailList = combine(n, k-1, ++start);
             for (List<Integer> tail : tailList) {
                 List<Integer> comb = new ArrayList<>();
                 comb.add(i);
