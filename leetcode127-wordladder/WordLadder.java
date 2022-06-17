@@ -39,12 +39,12 @@ public class WordLadder {
         System.out.printf("beginWord: %s, endWord: %s, wordList: %s -> %d%n", beginWord, endWord, wordList, ans);
     } 
 
-    private void buildMap(String word, Map<String, Set<String>> map) {
+    private void buildMap(String word, Map<String, List<String>> map) {
         for (int i = 0; i < word.length(); i++) {
             String pattern = word.substring(0, i) + "*" + word.substring(i+1); 
-            Set<String> neighbors = map.get(pattern);
+            List<String> neighbors = map.get(pattern);
             if (neighbors == null) {
-                neighbors = new HashSet<>();
+                neighbors = new ArrayList<>();
                 map.put(pattern, neighbors);
             }
             neighbors.add(word);
@@ -53,7 +53,7 @@ public class WordLadder {
 
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
         if (beginWord.length() == 1) return 2;
-        Map<String, Set<String>> map = new HashMap<>();
+        Map<String, List<String>> map = new HashMap<>();
         buildMap(beginWord, map);
         for (String word : wordList) {
             buildMap(word, map);
@@ -84,21 +84,17 @@ public class WordLadder {
                 */
                 return len;
             }
-            Set<String> toBeQueued = new HashSet<>();
             for (int i = 0; i < w.length(); i++) {
                 String pattern = w.substring(0,i) + "*" + w.substring(i+1); 
-                Set<String> neighbors = map.get(pattern);
+                List<String> neighbors = map.get(pattern);
                 for (String nb : neighbors) {
                     if (!visited.contains(nb)) {
-                        toBeQueued.add(nb);
+                        q.offer(nb);
+                        visited.add(nb);
+                        // System.out.printf("%s <- %s%n", nb, w);
+                        parent.put(nb, w);
                     }
                 }
-            }
-            for (String nb : toBeQueued) {
-                q.offer(nb);
-                visited.add(nb);
-                // System.out.printf("%s <- %s%n", nb, w);
-                parent.put(nb, w);
             }
         }
         return 0;
