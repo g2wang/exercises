@@ -53,6 +53,5 @@ public class LongestPalindromeSubstring {
         }
         return R - L - 1;
     }
-        
 
 }
