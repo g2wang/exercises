@@ -51,6 +51,10 @@ public class WordLadder {
         }
     }
 
+    /**
+     * Runtime: 121 ms, faster than 65.93% of Java online submissions for Word Ladder.
+     * Memory Usage: 65.9 MB, less than 52.73% of Java online submissions for Word Ladder.
+     */
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
         if (beginWord.length() == 1) return 2;
         Map<String, List<String>> map = new HashMap<>();
@@ -67,7 +71,7 @@ public class WordLadder {
         while (!q.isEmpty()) {
             String w = q.poll();
             if (w.equals(endWord)) {
-                Deque<String> stack = new ArrayDeque<>();
+                Deque<String> stack = new ArrayDeque<>(); // for the original problem, no stack is required, added stack here for debugging
                 stack.push(w);
                 String p = parent.get(w);
                 while (p != null) {
