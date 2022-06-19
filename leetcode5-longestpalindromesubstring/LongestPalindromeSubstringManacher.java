@@ -23,7 +23,7 @@ public class LongestPalindromeSubstringManacher {
 
     public static void main(String[] args) {
         LongestPalindromeSubstringManacher lps = new LongestPalindromeSubstringManacher(); 
-        String[] ss = new String[]{"babad", "cbbd"};
+        String[] ss = new String[]{"babad", "cbbd", "aacabdkacaa"};
         for (String s : ss) {
             String ans = lps.longestPalindrome(s);
             System.out.printf("%s -> %s%n", s, ans);
@@ -32,21 +32,25 @@ public class LongestPalindromeSubstringManacher {
 
     /**
      * Ref: https://en.wikipedia.org/wiki/Longest_palindromic_substring#Manacher's_algorithm
-    Manacher's algorithm
-    Below is the code for Manacher's algorithm. The algorithm is faster than
-    the previous algorithm because it exploits when a palindrome happens inside
-    another palindrome.
+     *
+        Manacher's algorithm
+        Below is the code for Manacher's algorithm. The algorithm is faster than
+        the previous algorithm because it exploits when a palindrome happens inside
+        another palindrome.
 
-    For example, consider the input string "abacaba". By the time it gets to the
-    "c", Manacher's algorithm will have identified the length of every palindrome
-    centered on the letters before the "c". At the "c", it runs a loop to identify
-    the largest palindrome centered on the "c": "abacaba". With that knowledge,
-    everything after the "c" looks like the reflection of everything before the
-    "c". The "a" after the "c" has the same longest palindrome as the "a" before
-    the "c". Similarly, the "b" after the "c" has a longest palindrome that is at
-    least the length of the longest palindrome centered on the "b" before the "c".
-    There are some special cases to consider, but that trick speeds up the
-    computation dramatically.
+        For example, consider the input string "abacaba". By the time it gets to the
+        "c", Manacher's algorithm will have identified the length of every palindrome
+        centered on the letters before the "c". At the "c", it runs a loop to identify
+        the largest palindrome centered on the "c": "abacaba". With that knowledge,
+        everything after the "c" looks like the reflection of everything before the
+        "c". The "a" after the "c" has the same longest palindrome as the "a" before
+        the "c". Similarly, the "b" after the "c" has a longest palindrome that is at
+        least the length of the longest palindrome centered on the "b" before the "c".
+        There are some special cases to consider, but that trick speeds up the
+        computation dramatically.
+     *
+     * Runtime: 19 ms, faster than 96.21% of Java online submissions for Longest Palindromic Substring.
+     * Memory Usage: 44 MB, less than 53.90% of Java online submissions for Longest Palindromic Substring.
      */
 
     public String longestPalindrome(String s) {
