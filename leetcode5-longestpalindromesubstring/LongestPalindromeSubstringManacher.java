@@ -55,7 +55,7 @@ public class LongestPalindromeSubstringManacher {
 
     public String longestPalindrome(String s) {
         if (s == null || s.length() < 1) return "";
-        StringBuilder sb = new StringBuilder(); // s with a bogus character (eg. '|') inserted between each character (including outer boundaries)
+        StringBuilder sb = new StringBuilder(2*s.length()+1); // s with a bogus character (eg. '|') inserted between each character (including outer boundaries)
         char[] ca = s.toCharArray();
         sb.append('|');
         for (int i = 0; i < ca.length; i++) {
@@ -119,7 +119,7 @@ public class LongestPalindromeSubstringManacher {
             }
         }
 
-        StringBuilder longestPalindromeInS = new StringBuilder();
+        StringBuilder longestPalindromeInS = new StringBuilder(maxRadius);
         for (int i = maxRadiusIndex-maxRadius; i <= maxRadiusIndex+maxRadius; i++) {
             char c = sb.charAt(i);
             if (c != '|') {
