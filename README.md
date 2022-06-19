@@ -1,4 +1,3 @@
-Facebook interview preparation:
 1) get familiar with basic data structures:
     hashtables
     linked lists
