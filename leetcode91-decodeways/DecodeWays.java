@@ -49,23 +49,27 @@ public class DecodeWays {
 
     /**
      * Runtime: 1 ms, faster than 98.09% of Java online submissions for Decode Ways.
-     * Memory Usage: 42.5 MB, less than 36.80% of Java online submissions for Decode Ways.
+     * Memory Usage: 41.5 MB, less than 80.76% of Java online submissions for Decode Ways.
      */
     public int numDecodings(String s) {
         if (s.charAt(0) == '0') return 0;
-        int[] ways = new int[s.length() + 1];
+        int[] ways = new int[2];
         ways[0] = 1;
         ways[1] = 1;
         for (int i = 2; i <= s.length(); i++) {
+            int ways2 = 0;
             char c = s.charAt(i-1);
             char pc = s.charAt(i-2);
             if (c == '0' && pc == '0') return 0;
-            if (c >= '1') ways[i] = ways[i-1];
-            int val = (pc-'0')*10 + (c-'0'); 
+            if (c >= '1') ways2 = ways[1];
+            int val = (pc-'0')*10 + (c-'0');
             if (val >= 10 && val <= 26) {
-                ways[i] += ways[i-2];
+                ways2 += ways[0];
             }
+            ways[0] = ways[1];
+            ways[1] = ways2;
         }
-        return ways[s.length()];
+        return ways[1];
     }
+
 }
