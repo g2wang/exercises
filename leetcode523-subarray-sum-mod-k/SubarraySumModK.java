@@ -31,8 +31,8 @@ Constraints:
 
  */
 import java.util.Arrays;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
 
 public class SubarraySumModK {
 
@@ -45,22 +45,26 @@ public class SubarraySumModK {
     }
 
     /**
-     * Runtime: 16 ms, faster than 89.58% of Java online submissions for Continuous Subarray Sum.
-     * Memory Usage: 56.9 MB, less than 95.52% of Java online submissions for Continuous Subarray Sum.
+     * Runtime: 15 ms, faster than 96.21% of Java online submissions for Continuous Subarray Sum.
+     * Memory Usage: 57.4 MB, less than 92.64% of Java online submissions for Continuous Subarray Sum.
      */
     public boolean checkSubarraySum(int[] nums, int k) {
         if (nums.length <= 1) return false;
-        Set<Integer> prefixSumModK = new HashSet<>();
+        Map<Integer, Integer> prefixSumModK = new HashMap<>();
+        prefixSumModK.put(0, -1);
         int sum = 0;
-        int prevSumModK = 0;
         for (int i = 0; i < nums.length; i++) {
             sum += nums[i];
-            // System.out.printf("sum: %d%n" , sum);
             int sumModK = sum%k;
-            if (prefixSumModK.contains(sumModK)) return true; 
-            prefixSumModK.add(prevSumModK); 
-            prevSumModK = sumModK;
+            // System.out.printf("sum: %d, sumModK: %d%n" , sum, sumModK);
+            Integer existing = prefixSumModK.get(sumModK);
+            if (existing != null) {
+                if (i - existing >= 2) return true;    
+            } else {
+                prefixSumModK.put(sumModK, i);
+            }
         }
         return false;
     }
+
 }
