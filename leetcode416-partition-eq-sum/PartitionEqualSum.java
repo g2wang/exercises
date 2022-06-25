@@ -35,7 +35,7 @@ public class PartitionEqualSum {
 
     }
 
-        public boolean canPartition(int[] nums) {
+    public boolean canPartition(int[] nums) {
         if (nums.length < 2) return false;
         int min = Integer.MAX_VALUE;
         int max = 0;
