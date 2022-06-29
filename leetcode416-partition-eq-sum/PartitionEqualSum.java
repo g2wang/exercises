@@ -29,7 +29,7 @@ public class PartitionEqualSum {
 
     public static void main(String[] args) {
         PartitionEqualSum pes = new PartitionEqualSum();
-        int[] nums = new int[]{1,5,11,5};
+        int[] nums = new int[]{1,2,3};
         boolean ans = pes.canPartition(nums);
         System.out.printf("%s -> %b%n", Arrays.toString(nums), ans);
 
@@ -37,31 +37,28 @@ public class PartitionEqualSum {
 
     public boolean canPartition(int[] nums) {
         if (nums.length < 2) return false;
-        int min = Integer.MAX_VALUE;
-        int max = 0;
         int total = 0;
         for (int n : nums) {
-            if (n > max) max = n;
-            if (n < min) min = n;
             total += n;
         }
         if (total % 2 != 0) return false;
         int half = total/2;
-        // one subset must contain the max element
-        if (max == half) return true;
-        int maxPlusMin = max + min;
-        if (maxPlusMin == half) return true;
-        if (maxPlusMin > half) return false;
-        return findSum(nums, nums.length-1, half);
-    }
-
-    public boolean findSum(int[] nums, int ub, int sum) {
-        int last = nums[ub];
-        if (ub == 0) return last == sum;
-        if (last == sum)  return true;
-        if (last > sum) return false;
-        return findSum(nums, ub-1, sum - last)
-            || findSum(nums, ub-1, sum);
+        boolean dp[][] = new boolean[nums.length][half+1];
+        for (int i = 0; i < nums.length; i++) {
+            dp[i][0] = true;
+            for (int j = 1; j <= half; j++) {
+                if (i == 0) {
+                    if (nums[i] == j) dp[i][j] = true;
+                } else {
+                    if (nums[i] > j) {
+                        dp[i][j] = dp[i-1][j];
+                    } else if (nums[i] == j || dp[i-1][j] || dp[i-1][j-nums[i]]) {
+                        dp[i][j] = true;
+                    }
+                }
+            }
+        }
+        return dp[nums.length-1][half];
     }
 
 }
