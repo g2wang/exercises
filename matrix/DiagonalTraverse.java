@@ -1,5 +1,5 @@
 /**
- * given a matrix m[n][n], traverse the upper right triangle of it diagonal.
+ * given a matrix m[n][n], traverse the upper right triangle of it diagonally.
  */
 
 public class DiagonalTraverse {
