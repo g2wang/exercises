@@ -1,6 +1,3 @@
-[registries.crates-io]
-protocol = "sparse"
-
 [package]
 name = "timezone-convert"
 version = "0.1.0"
