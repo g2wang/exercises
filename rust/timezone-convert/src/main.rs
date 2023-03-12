@@ -47,7 +47,9 @@ fn main() {
             second = s.as_str().parse::<u32>().unwrap();
         }
     } else {
-        println!("No match found");
+        if est.len() > 0 {
+            println!("invalid input");
+        }
     }
 
     let toronto_date = NaiveDate::from_ymd_opt(year, month, day).unwrap();
