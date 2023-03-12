@@ -46,10 +46,8 @@ fn main() {
         if let Some(s) = captures.get(6) {
             second = s.as_str().parse::<u32>().unwrap();
         }
-    } else {
-        if est.len() > 0 {
-            println!("invalid input");
-        }
+    } else if est.len() > 0 {
+        println!("invalid input");
     }
 
     let toronto_date = NaiveDate::from_ymd_opt(year, month, day).unwrap();
