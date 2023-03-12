@@ -1,4 +1,4 @@
-use chrono::{Datelike, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Timelike, Utc};
+use chrono::{Datelike, Local, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Timelike, Utc};
 use regex::Regex;
 use std::env;
 
@@ -13,19 +13,19 @@ fn main() {
     )
     .unwrap();
 
+    let local_now = Local::now();
+
+    let local_tz = local_now.timezone();
     let est_tz = chrono_tz::America::Toronto;
     let jst_tz = chrono_tz::Asia::Tokyo;
     let ist_tz = chrono_tz::Asia::Calcutta;
 
-    let now = Utc::now();
-    let est_now = now.with_timezone(&est_tz);
-
-    let mut year = est_now.year();
-    let mut month = est_now.month();
-    let mut day = est_now.day();
-    let mut hour = est_now.hour();
-    let mut minute = est_now.minute();
-    let mut second = 0u32;
+    let mut year = local_now.year();
+    let mut month = local_now.month();
+    let mut day = local_now.day();
+    let mut hour = local_now.hour();
+    let mut minute = local_now.minute();
+    let mut second = local_now.second();
 
     if let Some(captures) = time_pattern.captures(est) {
         if let Some(y) = captures.get(1) {
@@ -50,23 +50,21 @@ fn main() {
         println!("invalid input");
     }
 
-    let toronto_date = NaiveDate::from_ymd_opt(year, month, day).unwrap();
-    let toronto_time = NaiveTime::from_hms_opt(hour, minute, second).unwrap();
-    let toronto_date_time = NaiveDateTime::new(toronto_date, toronto_time)
-        .and_local_timezone(est_tz)
+    let local_date = NaiveDate::from_ymd_opt(year, month, day).unwrap();
+    let local_time = NaiveTime::from_hms_opt(hour, minute, second).unwrap();
+    let local_date_time = NaiveDateTime::new(local_date, local_time)
+        .and_local_timezone(local_tz)
         .unwrap();
 
-    let utc_date_time = Utc
-        .timestamp_millis_opt(toronto_date_time.timestamp_millis())
-        .unwrap();
+    let time_millis = local_date_time.timestamp_millis();
 
-    let tokyo_date_time = jst_tz
-        .timestamp_millis_opt(toronto_date_time.timestamp_millis())
-        .unwrap();
+    let toronto_date_time = est_tz.timestamp_millis_opt(time_millis).unwrap();
 
-    let mumbai_date_time = ist_tz
-        .timestamp_millis_opt(toronto_date_time.timestamp_millis())
-        .unwrap();
+    let utc_date_time = Utc.timestamp_millis_opt(time_millis).unwrap();
+
+    let tokyo_date_time = jst_tz.timestamp_millis_opt(time_millis).unwrap();
+
+    let mumbai_date_time = ist_tz.timestamp_millis_opt(time_millis).unwrap();
 
     println!("{}", toronto_date_time);
     println!("{}", utc_date_time);
