@@ -14,11 +14,7 @@ fn main() {
     .unwrap();
 
     let local_now = Local::now();
-
     let local_tz = local_now.timezone();
-    let est_tz = chrono_tz::America::Toronto;
-    let jst_tz = chrono_tz::Asia::Tokyo;
-    let ist_tz = chrono_tz::Asia::Calcutta;
 
     let mut year = local_now.year();
     let mut month = local_now.month();
@@ -60,12 +56,13 @@ fn main() {
 
     let time_millis = local_date_time.timestamp_millis();
 
+    let est_tz = chrono_tz::America::Toronto;
+    let jst_tz = chrono_tz::Asia::Tokyo;
+    let ist_tz = chrono_tz::Asia::Calcutta;
+
     let toronto_date_time = est_tz.timestamp_millis_opt(time_millis).unwrap();
-
     let utc_date_time = Utc.timestamp_millis_opt(time_millis).unwrap();
-
     let tokyo_date_time = jst_tz.timestamp_millis_opt(time_millis).unwrap();
-
     let mumbai_date_time = ist_tz.timestamp_millis_opt(time_millis).unwrap();
 
     println!("{}", toronto_date_time);
