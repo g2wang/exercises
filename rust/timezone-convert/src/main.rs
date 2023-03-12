@@ -42,9 +42,11 @@ fn main() {
         }
         if let Some(n) = captures.get(5) {
             minute = n.as_str().parse::<u32>().unwrap();
-        }
-        if let Some(s) = captures.get(6) {
-            second = s.as_str().parse::<u32>().unwrap();
+            if let Some(s) = captures.get(6) {
+                second = s.as_str().parse::<u32>().unwrap();
+            } else {
+                second = 0;
+            }
         }
     } else if est.len() > 0 {
         println!("invalid input");
