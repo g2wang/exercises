@@ -1,13 +1,16 @@
 use chrono::{Datelike, Local, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Timelike, Utc};
+use clap::Parser;
 use regex::Regex;
-use std::env;
+
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    local_date_time: Option<String>,
+}
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let mut est = "";
-    if args.len() > 1 {
-        est = &args[1].as_str();
-    }
+    let cli = Cli::parse();
+    let arg = cli.local_date_time.as_deref();
     let time_pattern = Regex::new(
         r"^(?:(\d{4})-(\d{2})-(\d{2})(?:T| ))?(\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:\.\d+)*)?$",
     )
@@ -23,29 +26,31 @@ fn main() {
     let mut minute = local_now.minute();
     let mut second = local_now.second();
 
-    if let Some(captures) = time_pattern.captures(est) {
-        if let Some(y) = captures.get(1) {
-            year = y.as_str().parse::<i32>().unwrap();
-        }
-        if let Some(m) = captures.get(2) {
-            month = m.as_str().parse::<u32>().unwrap();
-        }
-        if let Some(d) = captures.get(3) {
-            day = d.as_str().parse::<u32>().unwrap();
-        }
-        if let Some(h) = captures.get(4) {
-            hour = h.as_str().parse::<u32>().unwrap();
-        }
-        if let Some(n) = captures.get(5) {
-            minute = n.as_str().parse::<u32>().unwrap();
-            if let Some(s) = captures.get(6) {
-                second = s.as_str().parse::<u32>().unwrap();
-            } else {
-                second = 0;
+    if let Some(ldt) = arg {
+        if let Some(captures) = time_pattern.captures(ldt) {
+            if let Some(y) = captures.get(1) {
+                year = y.as_str().parse::<i32>().unwrap();
             }
+            if let Some(m) = captures.get(2) {
+                month = m.as_str().parse::<u32>().unwrap();
+            }
+            if let Some(d) = captures.get(3) {
+                day = d.as_str().parse::<u32>().unwrap();
+            }
+            if let Some(h) = captures.get(4) {
+                hour = h.as_str().parse::<u32>().unwrap();
+            }
+            if let Some(n) = captures.get(5) {
+                minute = n.as_str().parse::<u32>().unwrap();
+                if let Some(s) = captures.get(6) {
+                    second = s.as_str().parse::<u32>().unwrap();
+                } else {
+                    second = 0;
+                }
+            }
+        } else {
+            println!("invalid input");
         }
-    } else if est.len() > 0 {
-        println!("invalid input");
     }
 
     let local_date = NaiveDate::from_ymd_opt(year, month, day).unwrap();
