@@ -49,7 +49,9 @@ fn main() {
                 }
             }
         } else {
-            println!("invalid input");
+            println!(
+                "Invalid argument {ldt} - must be of format HH:mm[:ss] or yyyy-MM-dd HH:mm[:ss]"
+            );
         }
     }
 
