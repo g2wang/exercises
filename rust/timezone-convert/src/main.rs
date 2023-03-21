@@ -5,7 +5,9 @@ use regex::Regex;
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
-    #[arg(help = "local time or date time value of format HH:mm[:ss] or yyyy-MM-dd HH:mm[:ss]")]
+    #[arg(
+        help = "an optional local time or date time value of format HH:mm[:ss] or yyyy-MM-dd HH:mm[:ss]"
+    )]
     local_time_or_date_time: Option<String>,
 }
 
