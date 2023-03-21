@@ -76,7 +76,7 @@ fn main() {
         }
         if !input_is_valid {
             println!(
-                "Invalid argument {ldt} - must be of format HH:mm[:ss] or yyyy-MM-dd HH:mm[:ss]"
+                "Invalid argument {ldt} - must be valiate time or date time values of format HH:mm[:ss] or yyyy-MM-dd HH:mm[:ss]"
             );
             return;
         }
