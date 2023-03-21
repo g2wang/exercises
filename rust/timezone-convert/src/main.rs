@@ -5,12 +5,13 @@ use regex::Regex;
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
-    local_date_time: Option<String>,
+    #[arg(help = "a valid time or date time value of format HH:mm[:ss] or yyyy-MM-dd HH:mm[:ss]")]
+    local_time_or_date_time: Option<String>,
 }
 
 fn main() {
     let cli = Cli::parse();
-    let arg = cli.local_date_time.as_deref();
+    let arg = cli.local_time_or_date_time.as_deref();
     let time_pattern = Regex::new(
         r"^(?:(\d{4})-(\d{2})-(\d{2})(?:T| ))?(\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:\.\d+)*)?$",
     )
