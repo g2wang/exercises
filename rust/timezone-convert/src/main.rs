@@ -26,6 +26,7 @@ fn main() {
     let mut minute = local_now.minute();
     let mut second = local_now.second();
 
+    let mut input_is_valid = true;
     if let Some(ldt) = arg {
         if let Some(captures) = time_pattern.captures(ldt) {
             if let Some(y) = captures.get(1) {
@@ -33,25 +34,51 @@ fn main() {
             }
             if let Some(m) = captures.get(2) {
                 month = m.as_str().parse::<u32>().unwrap();
+                if month < 1 || month > 12 {
+                    input_is_valid = false;
+                }
             }
             if let Some(d) = captures.get(3) {
                 day = d.as_str().parse::<u32>().unwrap();
+                if day < 1
+                    || (month <= 7 && month % 2 == 0 && day > 30)
+                    || (month <= 7 && month % 2 != 0 && day > 31)
+                    || (month > 7 && month % 2 != 0 && day > 30)
+                    || (month > 7 && month % 2 == 0 && day > 31)
+                    || (month == 2 && is_leap_year(year) && day > 29)
+                    || (month == 2 && !is_leap_year(year) && day > 28)
+                {
+                    input_is_valid = false;
+                }
             }
             if let Some(h) = captures.get(4) {
                 hour = h.as_str().parse::<u32>().unwrap();
+                if hour > 24 {
+                    input_is_valid = false;
+                }
             }
             if let Some(n) = captures.get(5) {
                 minute = n.as_str().parse::<u32>().unwrap();
+                if minute > 60 {
+                    input_is_valid = false;
+                }
                 if let Some(s) = captures.get(6) {
                     second = s.as_str().parse::<u32>().unwrap();
+                    if second > 60 {
+                        input_is_valid = false;
+                    }
                 } else {
                     second = 0;
                 }
             }
         } else {
+            input_is_valid = false;
+        }
+        if !input_is_valid {
             println!(
                 "Invalid argument {ldt} - must be of format HH:mm[:ss] or yyyy-MM-dd HH:mm[:ss]"
             );
+            return;
         }
     }
 
@@ -76,4 +103,20 @@ fn main() {
     println!("{}", utc_date_time);
     println!("{}", tokyo_date_time);
     println!("{}", mumbai_date_time);
+}
+
+fn is_leap_year(year: i32) -> bool {
+    if year % 4 == 0 {
+        if year % 100 == 0 {
+            if year % 400 == 0 {
+                true
+            } else {
+                false
+            }
+        } else {
+            true
+        }
+    } else {
+        false
+    }
 }
