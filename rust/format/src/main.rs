@@ -85,3 +85,14 @@ fn main() {
         );
     }
 }
+
+// output:
+// Dublin: 53.348°N 6.260°W
+// Oslo: 59.950°N 10.750°E
+// Vancouver: 49.250°N 123.100°W
+// Color { red: 128, green: 255, blue: 90 }
+// color as html code #80FF5A
+// Color { red: 0, green: 3, blue: 254 }
+// color as html code #0003FE
+// Color { red: 0, green: 0, blue: 0 }
+// color as html code #000000
