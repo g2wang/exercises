@@ -2,6 +2,8 @@
 name = "timezone-convert"
 version = "0.1.0"
 edition = "2021"
+authors = ["Guangde Wang <g2wang@gmail.com>"]
+description = "a timezone conversion util"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

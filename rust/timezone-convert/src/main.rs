@@ -1,4 +1,5 @@
 use chrono::{Datelike, Local, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Timelike, Utc};
+use chrono_tz::Tz;
 use clap::Parser;
 use regex::Regex;
 
@@ -6,21 +7,33 @@ use regex::Regex;
 #[command(author, version, about, long_about = None)]
 struct Cli {
     #[arg(
-        help = "an optional local time or date time value of format HH:mm[:ss] or yyyy-MM-dd HH:mm[:ss]"
+        help = "an optional local time or date time value of format [yyyy-MM-dd ]HH:mm[:ss][EST|EDT|UTC|JST|IST].
+        If this argument is not specified, local time `now` will be used.
+        Note that within this argument itself, the yyyy-MM-dd (default today),
+        ss(seconds, default 00)
+        and timezone ([EST|EDT|UTC|JST|IST], default your computer's local timezone)
+        are also optional.
+        Examples:
+        09:30
+        09:30UTC
+        '2023-03-23 09:30:15'
+        '2023-03-23 09:30:15EST'
+        "
     )]
-    local_time_or_date_time: Option<String>,
+    time_or_date_time: Option<String>,
 }
 
 fn main() {
     let cli = Cli::parse();
-    let arg = cli.local_time_or_date_time.as_deref();
+    let arg = cli.time_or_date_time.as_deref();
     let time_pattern = Regex::new(
-        r"^(?:(\d{4})-(\d{2})-(\d{2})(?:T| ))?(\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:\.\d+)*)?$",
+        r"^(?:(\d{4})-(\d{2})-(\d{2})(?:T| ))?(\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:\.\d+)*)?(?: )?(EST|EDT|UTC|JST|IST)?$",
     )
     .unwrap();
 
     let local_now = Local::now();
     let local_tz = local_now.timezone();
+    let mut input_tz: Option<Tz> = None;
 
     let mut year = local_now.year();
     let mut month = local_now.month();
@@ -74,24 +87,44 @@ fn main() {
                     second = 0;
                 }
             }
+            if let Some(z) = captures.get(7) {
+                input_tz = match z.as_str() {
+                    "EST" | "EDT" => Some(chrono_tz::America::Toronto),
+                    "UTC" => Some(chrono_tz::UCT),
+                    "JST" => Some(chrono_tz::Asia::Tokyo),
+                    "IST" => Some(chrono_tz::Asia::Calcutta),
+                    _ => {
+                        input_is_valid = false;
+                        None
+                    }
+                }
+            }
         } else {
             input_is_valid = false;
         }
         if !input_is_valid {
             println!(
-                "Invalid argument {ldt} - must be valiate time or date time values of format HH:mm[:ss] or yyyy-MM-dd HH:mm[:ss]"
+                "Invalid argument {ldt} - must be a valiate time or date time value of format [yyyy-MM-dd ]HH:mm[:ss][EST|EDT|UTC|JST|IST]"
             );
             return;
         }
     }
 
-    let local_date = NaiveDate::from_ymd_opt(year, month, day).unwrap();
-    let local_time = NaiveTime::from_hms_opt(hour, minute, second).unwrap();
-    let local_date_time = NaiveDateTime::new(local_date, local_time)
-        .and_local_timezone(local_tz)
-        .unwrap();
+    let time_millis: i64;
 
-    let time_millis = local_date_time.timestamp_millis();
+    if let Some(z) = input_tz {
+        let input_date_time = z
+            .with_ymd_and_hms(year, month, day, hour, minute, second)
+            .unwrap();
+        time_millis = input_date_time.timestamp_millis();
+    } else {
+        let input_date = NaiveDate::from_ymd_opt(year, month, day).unwrap();
+        let input_time = NaiveTime::from_hms_opt(hour, minute, second).unwrap();
+        let input_date_time = NaiveDateTime::new(input_date, input_time)
+            .and_local_timezone(local_tz)
+            .unwrap();
+        time_millis = input_date_time.timestamp_millis();
+    }
 
     let est_tz = chrono_tz::America::Toronto;
     let jst_tz = chrono_tz::Asia::Tokyo;
