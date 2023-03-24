@@ -90,7 +90,7 @@ fn main() {
             if let Some(z) = captures.get(7) {
                 input_tz = match z.as_str() {
                     "EST" | "EDT" => Some(chrono_tz::America::Toronto),
-                    "UTC" => Some(chrono_tz::UCT),
+                    "UTC" => Some(chrono_tz::UTC),
                     "JST" => Some(chrono_tz::Asia::Tokyo),
                     "IST" => Some(chrono_tz::Asia::Calcutta),
                     _ => {
