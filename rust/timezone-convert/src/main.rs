@@ -4,7 +4,14 @@ use clap::Parser;
 use regex::Regex;
 
 #[derive(Parser)]
-#[command(author, version, about, long_about = None)]
+#[command(author, version, about, long_about = None, after_help="Examples:
+    timezone-convert
+    timezone-convert 9:30
+    timezone-convert 9:30:21
+    timezone-convert 9:30UTC
+    timezone-convert '2023-03-25 9:30'
+    timezone-convert '2023-03-25 9:30:41EDT'
+")]
 struct Cli {
     #[arg(
         help = "an optional local time or date time value of format [yyyy-MM-dd ]HH:mm[:ss][EST|EDT|UTC|JST|IST].
