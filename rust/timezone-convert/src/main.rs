@@ -38,7 +38,7 @@ fn main() {
     let cli = Cli::parse();
     let arg = cli.time_or_date_time.as_deref();
     let time_pattern = Regex::new(
-        r"^(?:(-?\d{1,})(?: ?ms)|(?:(\d{4})-(\d{2})-(\d{2})(?:T| ))?(\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:(?:\.)(\d{1,3}))?)?(?: )?(EST|EDT|UTC|UCT|JST|IST)?)$",
+        r"^(?:(-?\d{1,})(?: ?ms)|(?:(\d{4})-(\d{2})-(\d{2})(?:T| ))?(\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:(?:\.)(\d{1,3}))?)?(?: )?(EST|EDT|UTC|UCT|JST|IST)?)$"
     )
     .unwrap();
 
