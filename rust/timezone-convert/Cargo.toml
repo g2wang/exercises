@@ -1,5 +1,5 @@
 [package]
-name = "timezone-convert"
+name = "tt"
 version = "0.1.0"
 edition = "2021"
 authors = ["Guangde Wang <g2wang@gmail.com>"]

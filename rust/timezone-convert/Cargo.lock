@@ -524,7 +524,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "timezone-convert"
+name = "tt"
 version = "0.1.0"
 dependencies = [
  "chrono",
