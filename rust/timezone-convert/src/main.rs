@@ -72,12 +72,12 @@ fn main() {
                 if let Some(d) = captures.get(4) {
                     day = d.as_str().parse::<u32>().unwrap();
                     if day < 1
-                      || (month <= 7 && month % 2 == 0 && day > 30)
-                      || (month <= 7 && month % 2 != 0 && day > 31)
-                      || (month > 7 && month % 2 != 0 && day > 30)
-                      || (month > 7 && month % 2 == 0 && day > 31)
-                      || (month == 2 && is_leap_year(year) && day > 29)
-                      || (month == 2 && !is_leap_year(year) && day > 28)
+                        || (month <= 7 && month % 2 == 0 && day > 30)
+                        || (month <= 7 && month % 2 != 0 && day > 31)
+                        || (month > 7 && month % 2 != 0 && day > 30)
+                        || (month > 7 && month % 2 == 0 && day > 31)
+                        || (month == 2 && is_leap_year(year) && day > 29)
+                        || (month == 2 && !is_leap_year(year) && day > 28)
                     {
                         return show_invalid_arg_message(ldt);
                     }
