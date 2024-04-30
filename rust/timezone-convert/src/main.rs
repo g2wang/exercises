@@ -139,6 +139,10 @@ fn main() {
         }
     }
 
+    println!("{} {}", epoch_millis, "ms");
+    let utc_date_time = Utc.timestamp_millis_opt(epoch_millis).unwrap();
+    println!("{} ({})", utc_date_time, "UTC");
+
     let conf_file_path = home_dir().unwrap().join(".tt_config");
     if conf_file_path.exists() {
         // configured time zones
@@ -153,23 +157,20 @@ fn main() {
             });
     } else {
         // default time zones
-        let cst_tz = chrono_tz::Asia::Shanghai;
         let est_tz = chrono_tz::America::Toronto;
+        let cst_tz = chrono_tz::Asia::Shanghai;
         let jst_tz = chrono_tz::Asia::Tokyo;
         let ist_tz = chrono_tz::Asia::Calcutta;
 
         let toronto_date_time = est_tz.timestamp_millis_opt(epoch_millis).unwrap();
         let beijing_date_time = cst_tz.timestamp_millis_opt(epoch_millis).unwrap();
-        let utc_date_time = Utc.timestamp_millis_opt(epoch_millis).unwrap();
         let tokyo_date_time = jst_tz.timestamp_millis_opt(epoch_millis).unwrap();
         let mumbai_date_time = ist_tz.timestamp_millis_opt(epoch_millis).unwrap();
 
-        println!("{} {}", epoch_millis, "ms");
-        println!("{}", beijing_date_time);
-        println!("{}", utc_date_time);
-        println!("{}", toronto_date_time);
-        println!("{}", tokyo_date_time);
-        println!("{}", mumbai_date_time);
+        println!("{} ({})", toronto_date_time, est_tz.name());
+        println!("{} ({})", beijing_date_time, cst_tz.name());
+        println!("{} ({})", tokyo_date_time, jst_tz.name());
+        println!("{} ({})", mumbai_date_time, ist_tz.name());
     }
 }
 
