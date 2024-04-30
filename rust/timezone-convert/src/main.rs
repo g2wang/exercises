@@ -13,13 +13,14 @@ use std::fs::read_to_string;
   tt 1514764800000ms # epoch milliseconds for 2018-01-01 00:00:00 UTC
   tt -1ms
   tt 09:30
-  tt 09:30IST
-  tt '09:30 IST'
+  tt 09:30EST
+  tt 09:30BTJ # Beijing Time
+  tt '09:30 CST' # Beijing Time
   tt '2023-03-01 09:53:21'
   tt '2023-03-01 09:00CST'
   tt '2023-03-01 09:00 BJT'
-  tt '2023-03-01 09:53:21JST'
-  tt '2023-03-01 09:53:21 JST'
+  tt '2023-03-01 09:53:21IST'
+  tt '2023-03-01 09:53:21 IST'
   tt '2023-03-01 09:00EST'
   tt '2023-03-01 09:00 EST'
   tt '2023-03-13 09:00 EDT'
