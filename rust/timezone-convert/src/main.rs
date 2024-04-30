@@ -1,7 +1,11 @@
+use std::str::FromStr;
+
 use chrono::{Datelike, Local, NaiveDate, NaiveDateTime, NaiveTime, TimeZone, Utc};
 use chrono_tz::Tz;
 use clap::Parser;
+use dirs::home_dir;
 use regex::Regex;
+use std::fs::read_to_string;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None, after_help="Examples:
@@ -135,20 +139,38 @@ fn main() {
         }
     }
 
-    let est_tz = chrono_tz::America::Toronto;
-    let jst_tz = chrono_tz::Asia::Tokyo;
-    let ist_tz = chrono_tz::Asia::Calcutta;
+    let conf_file_path = home_dir().unwrap().join(".tt_config");
+    if conf_file_path.exists() {
+        // configured time zones
+        read_to_string(conf_file_path)
+            .unwrap()
+            .lines()
+            .for_each(move |line| {
+                let tz_from_config = Tz::from_str(line).unwrap();
+                let date_time_from_config =
+                    tz_from_config.timestamp_millis_opt(epoch_millis).unwrap();
+                println!("{} ({})", date_time_from_config, tz_from_config.name());
+            });
+    } else {
+        // default time zones
+        let cst_tz = chrono_tz::Asia::Shanghai;
+        let est_tz = chrono_tz::America::Toronto;
+        let jst_tz = chrono_tz::Asia::Tokyo;
+        let ist_tz = chrono_tz::Asia::Calcutta;
 
-    let toronto_date_time = est_tz.timestamp_millis_opt(epoch_millis).unwrap();
-    let utc_date_time = Utc.timestamp_millis_opt(epoch_millis).unwrap();
-    let tokyo_date_time = jst_tz.timestamp_millis_opt(epoch_millis).unwrap();
-    let mumbai_date_time = ist_tz.timestamp_millis_opt(epoch_millis).unwrap();
+        let toronto_date_time = est_tz.timestamp_millis_opt(epoch_millis).unwrap();
+        let beijing_date_time = cst_tz.timestamp_millis_opt(epoch_millis).unwrap();
+        let utc_date_time = Utc.timestamp_millis_opt(epoch_millis).unwrap();
+        let tokyo_date_time = jst_tz.timestamp_millis_opt(epoch_millis).unwrap();
+        let mumbai_date_time = ist_tz.timestamp_millis_opt(epoch_millis).unwrap();
 
-    println!("{} {}", epoch_millis, "ms");
-    println!("{}", toronto_date_time);
-    println!("{}", utc_date_time);
-    println!("{}", tokyo_date_time);
-    println!("{}", mumbai_date_time);
+        println!("{} {}", epoch_millis, "ms");
+        println!("{}", beijing_date_time);
+        println!("{}", utc_date_time);
+        println!("{}", toronto_date_time);
+        println!("{}", tokyo_date_time);
+        println!("{}", mumbai_date_time);
+    }
 }
 
 fn show_invalid_arg_message(ldt: &str) {

@@ -12,3 +12,4 @@ chrono = "0.4.23"
 chrono-tz = "0.8.1"
 regex = "1.7.1"
 clap = { version = "4.1.8", features = ["derive"] }
+dirs = "5.0.1"
