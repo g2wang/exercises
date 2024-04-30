@@ -16,6 +16,8 @@ use std::fs::read_to_string;
   tt 09:30IST
   tt '09:30 IST'
   tt '2023-03-01 09:53:21'
+  tt '2023-03-01 09:00CST'
+  tt '2023-03-01 09:00 BJT'
   tt '2023-03-01 09:53:21JST'
   tt '2023-03-01 09:53:21 JST'
   tt '2023-03-01 09:00EST'
@@ -27,11 +29,11 @@ use std::fs::read_to_string;
 struct Cli {
     #[arg(
         help = "an optional time or date time value of format
-        1234567890123ms (epoch millis) or [yyyy-MM-dd ]HH:mm[:ss][EST|EDT|UTC|JST|IST].
+        1234567890123ms (epoch millis) or [yyyy-MM-dd ]HH:mm[:ss][EST|EDT|CST|BJT|UTC|JST|IST].
         If this argument is not specified, local time 'now' will be used.
         Note that within this argument itself, the yyyy-MM-dd (default today),
         ss (seconds, default 00)
-        and timezone ([EST|EDT|UTC|JST|IST], default your computer's local timezone)
+        and timezone ([EST|EDT|CST|BJT|UTC|JST|IST], default your computer's local timezone)
         are also optional.",
         allow_hyphen_values = true
     )]
@@ -42,7 +44,7 @@ fn main() {
     let cli = Cli::parse();
     let arg = cli.time_or_date_time.as_deref();
     let time_pattern = Regex::new(
-        r"^(?:(-?\d{1,})(?: ?ms)|(?:(\d{4})-(\d{2})-(\d{2})(?:T| ))?(\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:(?:\.)(\d{1,3}))?)?(?: )?(EST|EDT|UTC|UCT|JST|IST)?)$"
+        r"^(?:(-?\d{1,})(?: ?ms)|(?:(\d{4})-(\d{2})-(\d{2})(?:T| ))?(\d{1,2}):(\d{1,2})(?::(\d{1,2})(?:(?:\.)(\d{1,3}))?)?(?: )?(EST|EDT|CST|BJT|UTC|UCT|JST|IST)?)$"
     )
     .unwrap();
 
@@ -113,6 +115,7 @@ fn main() {
                 if let Some(z) = captures.get(9) {
                     input_tz = match z.as_str() {
                         "EST" | "EDT" => Some(chrono_tz::America::Toronto),
+                        "CST" | "BJT" => Some(chrono_tz::Asia::Shanghai),
                         "UTC" | "UCT" => Some(chrono_tz::UTC),
                         "JST" => Some(chrono_tz::Asia::Tokyo),
                         "IST" => Some(chrono_tz::Asia::Calcutta),
@@ -176,7 +179,7 @@ fn main() {
 
 fn show_invalid_arg_message(ldt: &str) {
     println!(
-        "Invalid argument {ldt} - must be a valid time or date time value of format 1234567890123ms (epoch millis) or [yyyy-MM-dd ]HH:mm[:ss][EST|EDT|UTC|JST|IST]"
+        "Invalid argument {ldt} - must be a valid time or date time value of format 1234567890123ms (epoch millis) or [yyyy-MM-dd ]HH:mm[:ss][EST|EDT|CST|BJT|UTC|JST|IST]"
     );
 }
 
