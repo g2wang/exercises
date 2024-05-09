@@ -5,12 +5,11 @@ fn main() {
 }
 
 #[component]
-fn App() -> impl IntoView {
+fn app() -> impl IntoView {
     let (count, set_count) = create_signal(0);
-
     view! {
         <button
-            on:click=move |_| {
+            on:click = move |_| {
                 // on stable, this is set_count.set(3);
                 set_count(3);
             }
