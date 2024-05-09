@@ -1,0 +1,59 @@
+To read data from Kafka and write it to TDEngine database in Rust programming language, you can use the TDengine Kafka Connector. The connector consists of the TDengine Source Connector and TDengine Sink Connector. In this case, we will use the TDengine Sink Connector to integrate Kafka with TDengine.
+
+Here is an example script that demonstrates how to use the TDengine Kafka Connector to synchronize data from Kafka to TDengine:
+
+```rust
+use std::collections::HashMap;
+use std::time::Duration;
+
+use kafka::consumer::{Consumer, FetchOffset, GroupOffsetStorage};
+use kafka::producer::{Producer, Record, RequiredAcks};
+use kafka::error::Error as KafkaError;
+
+fn main() {
+    let mut consumer_config = HashMap::new();
+    consumer_config.insert("group.id", "my-group-id");
+    consumer_config.insert("bootstrap.servers", "localhost:9092");
+    consumer_config.insert("enable.auto.commit", "false");
+    consumer_config.insert("auto.offset.reset", "earliest");
+
+    let mut producer_config = HashMap::new();
+    producer_config.insert("bootstrap.servers", "localhost:9092");
+
+    let consumer: Consumer = Consumer::from_hosts(vec!["localhost:9092".to_owned()])
+        .with_topic("my-topic".to_owned())
+        .with_fallback_offset(FetchOffset::Earliest)
+        .with_offset_storage(GroupOffsetStorage::Kafka)
+        .create()
+        .unwrap();
+
+    let producer = Producer::from_hosts(vec!["localhost:9092".to_owned()])
+        .with_ack_timeout(Duration::from_secs(1))
+        .with_required_acks(RequiredAcks::One)
+        .create()
+        .unwrap();
+
+    for message in consumer.poll().unwrap().iter() {
+        match message {
+            Ok(m) => {
+                let record = Record::from_key_value("my-key", m.value.as_ref().unwrap());
+                producer.send(&record).unwrap();
+            },
+            Err(KafkaError::NoMessageReceived) => break,
+            Err(e) => println!("Error while receiving message: {:?}", e),
+        }
+    }
+}
+```
+
+Please note that this is just an example script and you will need to modify it to suit your specific use case. You can find more information about the TDengine Kafka Connector in the [official documentation](https://tdengine.com/synchronizing-data-from-kafka-to-tdengine/).
+
+Source: Conversation with Bing, 11/18/2023
+(1) Synchronizing data from Kafka to TDengine | TDengine. https://tdengine.com/synchronizing-data-from-kafka-to-tdengine/.
+(2) Streaming data from Kafka to a Database - video walkthrough. https://dev.to/confluentinc/streaming-data-from-kafka-to-a-database-video-walkthrough-4o5p.
+(3) TDengine Kafka Connector Tutorial - Time-Series Database. https://docs.tdengine.com/third-party/kafka/.
+(4) 4. Kafka Consumers: Reading Data from Kafka - Kafka: The Definitive .... https://www.oreilly.com/library/view/kafka-the-definitive/9781491936153/ch04.html.
+(5) Create an Apache Kafka Client App for Rust - Confluent. https://docs.confluent.io/platform/current/clients/examples/rust.html.
+(6) Get Started with Rust and Apache Kafka - Confluent. https://www.confluent.io/blog/getting-started-with-rust-and-kafka/.
+(7) 10 Best Use Cases of Rust Programming Language in 2023. https://dev.to/chetanmittaldev/10-best-use-cases-of-rust-programming-language-in-2023-20jk.
+(8) undefined. https://github.com/confluentinc/examples.

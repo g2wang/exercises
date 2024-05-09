@@ -1,0 +1,60 @@
+Sure, here's a basic example of how you might read data from Kafka and write it to TDengine in Rust. Please note that this is a simplified example and may need to be adjusted based on your specific use case.
+
+```rust
+extern crate kafka;
+extern crate taos;
+
+use kafka::consumer::{Consumer, FetchOffset, GroupOffsetStorage};
+use taos::*;
+
+fn main() {
+    // Create a Kafka consumer
+    let mut consumer = Consumer::from_hosts(vec!["localhost:9092".to_owned()])
+        .with_topic("my-topic".to_owned())
+        .with_group("my-group".to_owned())
+        .with_fallback_offset(FetchOffset::Earliest)
+        .with_offset_storage(GroupOffsetStorage::Kafka)
+        .create()
+        .unwrap();
+
+    // Create a TDengine connection
+    let mut taos = Taos::new("localhost", "root", "taosdata", None, 0).unwrap();
+
+    loop {
+        for ms in consumer.poll().unwrap().iter() {
+            for m in ms.messages() {
+                let key = match m.key {
+                    Some(k) => String::from_utf8_lossy(k).into_owned(),
+                    None => "".to_string(),
+                };
+                let value = match m.value {
+                    Some(v) => String::from_utf8_lossy(v).into_owned(),
+                    None => "".to_string(),
+                };
+
+                // Write the key and value to TDengine
+                let sql = format!("insert into my_table values('{}', '{}')", key, value);
+                taos.query(&sql).unwrap();
+            }
+            consumer.consume_messageset(ms);
+        }
+        consumer.commit_consumed().unwrap();
+    }
+}
+```
+
+In this example, we're using the `kafka` and `taos` crates to interact with Kafka and TDengine, respectively. We create a Kafka consumer and a TDengine connection, then continuously poll the consumer for new messages. For each message, we extract the key and value and insert them into a TDengine table.
+
+Please make sure to replace `"localhost:9092"`, `"my-topic"`, `"my-group"`, `"localhost"`, `"root"`, `"taosdata"`, and `"my_table"` with your actual Kafka and TDengine settings.
+
+Also, please note that error handling is minimal in this example for the sake of clarity. In a real-world application, you'd want to add proper error handling. You might also want to batch your inserts into TDengine for efficiency, rather than inserting one row at a time.
+
+Remember to add the `kafka` and `taos` dependencies in your `Cargo.toml` file:
+
+```toml
+[dependencies]
+kafka = "0.8"
+taos = "0.2"
+```
+
+This is a very basic example and might need to be adjusted according to your specific use case and environment. If you have any more specific requirements, feel free to ask! 😊
