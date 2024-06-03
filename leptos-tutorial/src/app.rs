@@ -1,3 +1,4 @@
+use crate::control_flow::ControlFlow;
 use crate::forms::{ControlledComponent, UncontrolledComponent};
 use crate::lists::{DynamicList, StaticList};
 use crate::progress_bar::ProgressBar;
@@ -93,5 +94,10 @@ pub fn App() -> impl IntoView {
         <ControlledComponent/>
         <h2>"Uncontrolled Component"</h2>
         <UncontrolledComponent/>
+
+        <p>"---------------------------------------------"</p>
+        <h2>"Controlled Flow"</h2>
+        <ControlFlow/>
+
     }
 }
