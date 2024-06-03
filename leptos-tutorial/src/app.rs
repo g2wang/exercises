@@ -95,6 +95,7 @@ pub fn App() -> impl IntoView {
         <h2>"Uncontrolled Component"</h2>
         <UncontrolledComponent/>
 
+        <hr/>
         <p>"---------------------------------------------"</p>
         <h2>"Controlled Flow"</h2>
         <ControlFlow/>
