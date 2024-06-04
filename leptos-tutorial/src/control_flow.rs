@@ -7,15 +7,12 @@ pub fn ControlFlow() -> impl IntoView {
     let odd_text = move || if is_odd() { Some("How odd!") } else { None };
 
     view! {
-        <h1>"Control Flow"</h1>
-
         // simple UI to update and show a value
         <button on:click = move |_| set_value.update(|n| *n += 1 )>
             "+1"
         </button>
         <p>"Value is: " {value}</p>
 
-        <hr/>
         <h2><code>"Option<T>"</code></h2>
         // for any `T` that implements `IntoView`, so does `Option<T>`
         <p>{odd_text}</p>

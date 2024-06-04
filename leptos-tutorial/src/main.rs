@@ -1,5 +1,6 @@
 mod app;
 mod control_flow;
+mod error_handling;
 mod forms;
 mod lists;
 mod progress_bar;

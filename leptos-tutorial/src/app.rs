@@ -1,4 +1,5 @@
 use crate::control_flow::ControlFlow;
+use crate::error_handling::ErrorHandling;
 use crate::forms::{ControlledComponent, UncontrolledComponent};
 use crate::lists::{DynamicList, StaticList};
 use crate::progress_bar::ProgressBar;
@@ -78,8 +79,7 @@ pub fn App() -> impl IntoView {
         // which makes this ProgressBar move twice as fast
         <ProgressBar max = 50 progress = Signal::derive(double_count)/>
 
-        <p>"---------------------------------------------"</p>
-
+        <hr/>
         <h1>"Iteration"</h1>
         <h2>"Static List"</h2>
         <p>Use this pattern if the list is static</p>
@@ -89,16 +89,18 @@ pub fn App() -> impl IntoView {
         <p>Use this pattern if the rows in your list will change</p>
         <DynamicList initial_length = 3 />
 
-        <p>"---------------------------------------------"</p>
-        <h2>"Controlled Component"</h2>
+        <hr/>
+        <h1>"Controlled Component"</h1>
         <ControlledComponent/>
-        <h2>"Uncontrolled Component"</h2>
+        <h1>"Uncontrolled Component"</h1>
         <UncontrolledComponent/>
 
         <hr/>
-        <p>"---------------------------------------------"</p>
-        <h2>"Controlled Flow"</h2>
+        <h1>"Control Flow"</h1>
         <ControlFlow/>
 
+        <hr/>
+        <h1>"Error Handling"</h1>
+        <ErrorHandling/>
     }
 }
