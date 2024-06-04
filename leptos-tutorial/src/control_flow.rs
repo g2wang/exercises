@@ -41,7 +41,7 @@ pub fn ControlFlow() -> impl IntoView {
         <p class:hidden = is_odd>"Using class:hidden: Appears if even"</p>
 
         // c. use <Show/> component which renders the fallback and child only once, lazily, and
-        // toggles between then when needed, more efficient than the { move || if ... } block for
+        // toggles between them when needed, more efficient than the { move || if ... } block for
         // heavyweight re-rendering
         <Show when = is_odd
         fallback = || view! {<p>"using <Show/>: Even steven"</p>}
