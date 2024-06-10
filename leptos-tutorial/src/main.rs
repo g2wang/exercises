@@ -3,6 +3,7 @@ mod control_flow;
 mod error_handling;
 mod forms;
 mod lists;
+mod parent_child_communication;
 mod progress_bar;
 
 use app::App;

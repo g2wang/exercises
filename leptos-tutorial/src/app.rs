@@ -2,6 +2,7 @@ use crate::control_flow::ControlFlow;
 use crate::error_handling::ErrorHandling;
 use crate::forms::{ControlledComponent, UncontrolledComponent};
 use crate::lists::{DynamicList, StaticList};
+use crate::parent_child_communication::{ButtonA, ButtonB, ButtonC, ButtonD, SmallcapsContext};
 use crate::progress_bar::ProgressBar;
 use leptos::*;
 
@@ -21,6 +22,13 @@ pub fn App() -> impl IntoView {
     let double_count = move || count() * 2;
     // the `view` macro is how we define the user interface
     // it uses an HTML-like format that can accept certain Rust values
+
+    let (red, set_red) = create_signal(false);
+    let (right, set_right) = create_signal(false);
+    let (italics, set_italics) = create_signal(false);
+    let (smallcaps, set_smallcaps) = create_signal(false);
+    provide_context(SmallcapsContext(set_smallcaps));
+
     view! {
         <button
             // on:click will run whenever the `click` event fires
@@ -102,5 +110,28 @@ pub fn App() -> impl IntoView {
         <hr/>
         <h1>"Error Handling"</h1>
         <ErrorHandling/>
+
+        <hr/>
+        <h1>"Parent-Child Communication"</h1>
+        <p
+            class:red = red
+            class:right = right
+            class:italics = italics
+            class:smallcaps = smallcaps
+        >
+            "Lorem ipsum sit dolor amet."
+        </p>
+
+        // ButtonA gets SignalWitter passed here
+        <ButtonA setter = set_red />
+
+        // ButtonB gets a closure
+        <ButtonB on_click = move |_| set_right.update(|value| *value = !*value) />
+
+        // ButtonC gets a regular event listener in-situ
+        <ButtonC on:click = move |_| set_italics.update(|value| *value = !*value) />
+
+        // ButtonD gets its setter form the SmallcapsContext
+        <ButtonD/>
     }
 }
