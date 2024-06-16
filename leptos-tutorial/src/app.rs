@@ -3,6 +3,7 @@ use crate::error_handling::ErrorHandling;
 use crate::forms::{ControlledComponent, UncontrolledComponent};
 use crate::lists::{DynamicList, StaticList};
 use crate::parent_child_communication::{ButtonA, ButtonB, ButtonC, ButtonD, SmallcapsContext};
+use crate::passing_children_to_components::{TakesChildren, WrapsChildren};
 use crate::progress_bar::ProgressBar;
 use leptos::*;
 
@@ -28,6 +29,18 @@ pub fn App() -> impl IntoView {
     let (italics, set_italics) = create_signal(false);
     let (smallcaps, set_smallcaps) = create_signal(false);
     provide_context(SmallcapsContext(set_smallcaps));
+
+    // args for calling TakesChildren components
+    let (items, _set_items) = create_signal(vec![0, 1, 2]);
+    let render_prop = move || {
+        // items.with(...) reacts to the value without cloning
+        // by applying a function passed to it which is the `len`
+        // method on a `Vec<_>` directly
+        let len = move || items.with(Vec::len);
+        view! {
+            <p>"Length: " {len}</p>
+        }
+    };
 
     view! {
         <button
@@ -133,5 +146,24 @@ pub fn App() -> impl IntoView {
 
         // ButtonD gets its setter form the SmallcapsContext
         <ButtonD/>
+
+        // calling TakesChildren and WrapsChildren components
+        <hr/>
+        <TakesChildren
+        // for component props, you can shorthand `render_prop=render_prop` => `render_prop`
+        // this does not work with HTML element attributes
+          render_prop = render_prop
+        >
+            <p>"In TakesChildren: Here is a child."</p>
+            <p>"In TakesChildren: Here is another child."</p>
+            <p>"In TakesChildren: Here is a third child."</p>
+        </TakesChildren>
+
+        <hr />
+
+        <WrapsChildren>
+            <p>"Here is a child."</p>
+            <p>"Here is another child."</p>
+        </WrapsChildren>
     }
 }

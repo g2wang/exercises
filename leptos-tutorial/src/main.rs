@@ -4,6 +4,7 @@ mod error_handling;
 mod forms;
 mod lists;
 mod parent_child_communication;
+mod passing_children_to_components;
 mod progress_bar;
 
 use app::App;
