@@ -1,5 +1,6 @@
 mod app;
 mod control_flow;
+mod effects;
 mod error_handling;
 mod forms;
 mod lists;

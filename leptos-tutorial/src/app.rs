@@ -1,4 +1,5 @@
 use crate::control_flow::ControlFlow;
+use crate::effects::{EffectVsDerivedSignal, EffectsApp, ManualVersion};
 use crate::error_handling::ErrorHandling;
 use crate::forms::{ControlledComponent, UncontrolledComponent};
 use crate::lists::{DynamicList, StaticList};
@@ -165,5 +166,15 @@ pub fn App() -> impl IntoView {
             <p>"Here is a child."</p>
             <p>"Here is another child."</p>
         </WrapsChildren>
+
+        <hr />
+        <h1>"Effects and Derived Signals"</h1>
+        <EffectsApp/>
+
+        <h3>"Manual version using form on_change"</h3>
+        <ManualVersion/>
+        <h3>"Derived Signal"</h3>
+        <EffectVsDerivedSignal/>
+
     }
 }
