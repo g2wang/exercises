@@ -1,0 +1,10 @@
+[package]
+name = "splx"
+version = "0.1.0"
+edition = "2021"
+authors = ["Guangde Wang <g2wang@gmail.com>"]
+description = "Splits a text file into pieces with the size of each piece below a specified maximum number of bytes."
+
+[dependencies]
+splitx = "1.0"
+clap = { version = "4.5.15", features = ["derive"] }
